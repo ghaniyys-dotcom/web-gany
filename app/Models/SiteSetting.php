@@ -1,0 +1,163 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;
+class SiteSetting extends Model
+{
+    protected $fillable = [
+        'brand_name', 'logo_initials', 'tagline', 'tagline_en', 'hero_title', 'hero_title_en',
+        'hero_subtitle', 'hero_subtitle_en', 'primary_cta', 'primary_cta_en',
+        'secondary_cta', 'secondary_cta_en', 'email', 'whatsapp', 'admin_password_hash',
+        'services', 'services_en', 'works', 'stats', 'stats_en', 'estimator_enabled', 'estimator_pricing', 'budget_ranges',
+        'newsletter_title', 'newsletter_title_en', 'newsletter_desc', 'newsletter_desc_en'
+    ];
+
+    protected $casts = [
+        'services' => 'array',
+        'services_en' => 'array',
+        'works' => 'array',
+        'stats' => 'array',
+        'stats_en' => 'array',
+        'estimator_enabled' => 'boolean',
+        'estimator_pricing' => 'array',
+        'budget_ranges' => 'array'
+    ];
+
+    public function getTaglineAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->tagline_en ?: $value;
+        }
+        return $value;
+    }
+
+    public function getHeroTitleAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->hero_title_en ?: $value;
+        }
+        return $value;
+    }
+
+    public function getHeroSubtitleAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->hero_subtitle_en ?: $value;
+        }
+        return $value;
+    }
+
+    public function getPrimaryCtaAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->primary_cta_en ?: $value;
+        }
+        return $value;
+    }
+
+    public function getSecondaryCtaAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->secondary_cta_en ?: $value;
+        }
+        return $value;
+    }
+
+    public function getServicesAttribute($value)
+    {
+        if (app()->getLocale() === 'en' && !empty($this->services_en)) {
+            return is_string($this->services_en) ? json_decode($this->services_en, true) : $this->services_en;
+        }
+        return is_string($value) ? json_decode($value, true) : $value;
+    }
+
+    public function getStatsAttribute($value)
+    {
+        if (app()->getLocale() === 'en' && !empty($this->stats_en)) {
+            return is_string($this->stats_en) ? json_decode($this->stats_en, true) : $this->stats_en;
+        }
+        return is_string($value) ? json_decode($value, true) : $value;
+    }
+
+    public function getNewsletterTitleAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->newsletter_title_en ?: $value;
+        }
+        return $value ?: 'Dapatkan Penawaran Khusus';
+    }
+
+    public function getNewsletterDescAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            return $this->newsletter_desc_en ?: $value;
+        }
+        return $value ?: 'Masukkan email Anda untuk mendapatkan info promo pembuatan website dan konsultasi digital gratis dari kami.';
+    }
+
+    public function getWorksAttribute()
+    {
+        return \App\Models\PortfolioWork::orderBy('sort_order')->get()->toArray();
+    }
+
+    public static function current(): self
+    {
+        return static::first() ?? static::create(static::defaults());
+    }
+
+    public static function defaults(): array
+    {
+        return [
+            'brand_name' => 'Asteria Labs',
+            'tagline' => 'Strategy-led digital studio for ambitious brands',
+            'hero_title' => 'We build company presence that feels premium, fast, and trusted.',
+            'hero_subtitle' => 'Asteria Labs adalah partner digital untuk brand modern: company profile, web experience, product interface, dan growth system yang dibuat rapi dari strategi sampai launch.',
+            'primary_cta' => 'Bangun Website Sekarang',
+            'secondary_cta' => 'Lihat Showcase',
+            'email' => 'hello@asterialabs.id',
+            'whatsapp' => '6281234567890',
+            'estimator_enabled' => false,
+            'newsletter_title' => 'Dapatkan Penawaran Khusus',
+            'newsletter_title_en' => 'Get Special Offers',
+            'newsletter_desc' => 'Masukkan email Anda untuk mendapatkan info promo pembuatan website dan konsultasi digital gratis dari kami.',
+            'newsletter_desc_en' => 'Enter your email to get info on website promos and free digital consultations from us.',
+            'budget_ranges' => [
+                'Di bawah Rp 1 juta',
+                'Rp 1 - 3 juta',
+                'Rp 3 - 5 juta',
+                'Rp 5 juta+'
+            ],
+            'estimator_pricing' => [
+                'base_prices' => [
+                    'landing' => 3000000,
+                    'compro' => 6000000,
+                    'custom' => 12000000
+                ],
+                'feature_prices' => [
+                    'animation' => 1500000,
+                    'admin' => 2500000,
+                    'seo' => 1000000,
+                    'multilang' => 2000000
+                ],
+                'feature_labels' => [
+                    'animation' => 'Premium Animations (+Rp 1.5jt)',
+                    'admin' => 'Custom CMS / Admin (+Rp 2.5jt)',
+                    'seo' => 'SEO Pack (+Rp 1jt)',
+                    'multilang' => 'Multi-Language (+Rp 2jt)'
+                ]
+            ],
+            'stats' => [
+                ['value' => '42+', 'label' => 'projects shipped'],
+                ['value' => '3.8x', 'label' => 'avg. inquiry lift'],
+                ['value' => '14d', 'label' => 'prototype sprint']
+            ],
+            'services' => [
+                ['icon' => '✦', 'title' => 'Brand Strategy', 'body' => 'Positioning, messaging, tone of voice, dan narasi brand biar pengunjung langsung ngerti kenapa harus pilih lu.'],
+                ['icon' => '◈', 'title' => 'Website Experience', 'body' => 'Landing, company profile, services page, portfolio, contact flow, dan responsive UI dengan visual premium.'],
+                ['icon' => '↗', 'title' => 'Growth Funnel', 'body' => 'CTA architecture, lead capture, WhatsApp/contact integration, analytics-ready structure, dan speed optimization.']
+            ],
+            'works' => [
+                ['tag' => 'Corporate Website', 'title' => 'Nebula Capital', 'body' => 'Investor-grade web profile dengan data storytelling, credibility blocks, dan high-trust contact journey.'],
+                ['tag' => 'Product Launch', 'title' => 'OrbitOS', 'body' => 'Launch page SaaS dengan dashboard preview dan pricing-ready layout.'],
+                ['tag' => 'Brand Refresh', 'title' => 'Velora Studio', 'body' => 'Portfolio architecture untuk creative studio biar case study lebih menjual.']
+            ]
+        ];
+    }}

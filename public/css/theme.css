@@ -1,0 +1,103 @@
+/* ==========================================================================
+   FLUXORA THEME — Permanent Dark Cinematic Mode
+   All dark-mode variables are now set in site.css :root.
+   This file only contains minimal overrides that remain necessary.
+   ========================================================================== */
+
+:root { --link-color: #8a8580; }
+
+/* Theme toggle kept for non-home pages but mostly hidden on home */
+.theme-toggle .theme-icon--moon { display: none; }
+.theme-toggle .theme-icon--sun { display: inline; }
+
+/* Force dark theme regardless of data-theme attribute */
+[data-theme="dark"],
+[data-theme="light"] {
+  --navy: #e8e4df;
+  --ink: #e8e4df;
+  --muted: #8a8580;
+  --line: rgba(255, 120, 50, 0.10);
+  --soft: #0a0a0a;
+  --white: #111111;
+  --link-color: #8a8580;
+  --shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  --shadow2: 0 16px 45px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] body,
+[data-theme="light"] body {
+  color: var(--ink);
+  background: #000;
+}
+
+[data-theme="dark"] .nav,
+[data-theme="light"] .nav {
+  background: rgba(0, 0, 0, 0.72);
+  border-bottom-color: rgba(255, 120, 50, 0.08);
+}
+
+[data-theme="dark"] .links { color: var(--link-color); }
+
+[data-theme="dark"] .theme-toggle,
+[data-theme="light"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  border-color: rgba(255, 120, 50, 0.1);
+}
+
+[data-theme="dark"] .btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  border-color: rgba(255, 120, 50, 0.15);
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .stat,
+[data-theme="dark"] .case,
+[data-theme="dark"] .contact-box,
+[data-theme="dark"] .dash,
+[data-theme="dark"] .step {
+  background: var(--white);
+  border-color: var(--line);
+}
+
+[data-theme="dark"] .section-alt { background: var(--soft); }
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  border-color: rgba(255, 120, 50, 0.1);
+}
+
+[data-theme="dark"] .footer { color: var(--muted); }
+[data-theme="dark"] .success {
+  background: rgba(21, 190, 131, 0.1);
+  border-color: rgba(21, 190, 131, 0.3);
+  color: #34d399;
+}
+
+[data-theme="dark"] .mobile-menu { background: rgba(0, 0, 0, 0.96); }
+[data-theme="dark"] .mobile-menu a { background: var(--soft); color: var(--ink); }
+[data-theme="dark"] .nav-toggle { background: rgba(255, 255, 255, 0.04); color: var(--ink); }
+
+[data-theme="dark"] .faq-item,
+[data-theme="dark"] .process-card,
+[data-theme="dark"] .step {
+  background: var(--white);
+  border-color: var(--line);
+}
+
+[data-theme="dark"] .browser-bar { background: rgba(255, 255, 255, 0.03); }
+[data-theme="dark"] .browser-address { background: rgba(255, 255, 255, 0.04); }
+[data-theme="dark"] .browser-content { background: #080808; }
+[data-theme="dark"] .browser-mockup { background: #0a0a0a; border-color: rgba(255, 120, 50, 0.08); }
+[data-theme="dark"] .soundwave-toggle { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 120, 50, 0.1); }
+
+[data-theme="dark"] .analytic-card { background: var(--white); border-color: var(--line); }
+[data-theme="dark"] .analytic-card .val { color: #fff; }
+[data-theme="dark"] .svg-chart-container { background: var(--white); border-color: var(--line); }
+[data-theme="dark"] .chart-header h3 { color: #fff; }
+
+[data-theme="dark"] #ticker-text { color: var(--ink); }
