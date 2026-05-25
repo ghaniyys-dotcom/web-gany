@@ -29,23 +29,17 @@
 
   {{-- Premium Masterpiece: Cinematic Intro Overlay --}}
   @if($intro->is_enabled)
-  <div id="intro-overlay">
+  <div id="intro-overlay" onclick="dismissIntro()" style="cursor: pointer;">
     <!-- 🎭 Dual-Panel Split Curtain Background Layers -->
     <div class="intro-curtain curtain-left"></div>
     <div class="intro-curtain curtain-right"></div>
 
-    <div class="intro-content-wrapper" style="position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <div class="intro-content-wrapper" style="position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0;">
       <div class="intro-glow-orb"></div>
       <canvas id="ember-particles"></canvas>
-      <button class="intro-skip" id="introSkip">Skip ↗</button>
-      <div class="intro-progress" id="introProgress" style="width:0"></div>
-      <div class="intro-line intro-greeting" id="iLine0">{{ $intro->greeting }}</div>
-      <div class="intro-line intro-name" id="iLine1">{{ $intro->name }}</div>
-      <div class="intro-line intro-role" id="iLine2"></div>
-      <div class="intro-line intro-tagline" id="iLine3">{{ $intro->tagline }}</div>
-      <div class="intro-line" id="iLine4">
-        <button class="intro-cta" id="introCta" onclick="dismissIntro()">{{ $intro->cta_text }}</button>
-      </div>
+      
+      <!-- 🎬 Giant Defocused Warm-White Serif 'halo' Centerpiece -->
+      <div class="intro-line intro-name" id="iLine1">halo</div>
     </div>
   </div>
   @endif
@@ -62,7 +56,7 @@
     <div class="hero-fullscreen-wrap" style="align-items: center; text-align: center;">
       <div class="hero-fullscreen-content" data-parallax data-parallax-speed="-0.03" style="max-width: 820px; text-align: center; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
         {{-- Typographic scrambled typing title --}}
-        <h1 class="text-white font-extrabold tracking-tight leading-none select-none font-sans text-center" id="hero-scramble-title" data-words="{{ $site->hero_title }}" style="font-size: clamp(34px, 5.5vw, 68px); line-height: 1.1; letter-spacing: -0.04em; margin: 0 auto; text-align: center; width: 100%;">
+        <h1 class="text-white font-extrabold tracking-tight leading-none select-none text-center" id="hero-scramble-title" data-words="{{ $site->hero_title }}" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(34px, 5.5vw, 68px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 auto; text-align: center; width: 100%;">
           <span id="scramble-mount-text"></span><span class="animate-pulse select-none" style="color:var(--purple); font-weight: 300;">_</span>
         </h1>
       </div>
@@ -192,7 +186,7 @@
             {{ __('Production-grade engineering. Focused on performance.') }}
           </h2>
         </div>
-        <p style="margin: 0;"><a href="{{ route('portfolio') }}" style="color:var(--purple);font-weight:800;font-size: 15px;">{{ __('Browse the archives →') }}</a></p>
+        <p style="margin: 0;"><a href="{{ route('portfolio') }}" class="bento-archives-link" style="color:var(--purple);font-weight:800;font-size: 15px;">{{ __('Browse the archives →') }}</a></p>
       </div>
 
       @if(count($site->works ?? []) > 0)
@@ -222,6 +216,9 @@
             }
           @endphp
           <article class="bento-card-custom {{ $bentoClass }} magnetic-card" data-category="{{ Str::slug($work['tag'] ?? 'all') }}" data-tilt-enabled="{{ $index === 1 ? 'true' : 'false' }}">
+            {{-- Glossy Sheen Reflection Overlay --}}
+            <div class="bento-card-sheen"></div>
+
             {{-- Background Media --}}
             <div class="bento-card-media">
               @if(!empty($work['image_url']))
@@ -280,11 +277,11 @@
   @endif
 
   <section id="process" class="timeline-centered-section">
-    {{-- Vertical Wire Track --}}
+    {{-- Vertical Wire Track (Winding Neon Path) --}}
     <div class="timeline-wire-container">
-      <svg class="timeline-svg-wire" viewBox="0 0 4 1000" fill="none" preserveAspectRatio="none">
-        <line x1="2" y1="0" x2="2" y2="1000" class="timeline-wire-track" stroke-width="4" stroke-linecap="round"/>
-        <line x1="2" y1="0" x2="2" y2="1000" class="timeline-wire-draw" id="timelineWireDraw" stroke-width="4" stroke-linecap="round"/>
+      <svg class="timeline-svg-wire" viewBox="0 0 80 1000" fill="none" preserveAspectRatio="none">
+        <path d="M 40,0 Q 15,125 40,250 T 40,500 T 40,750 T 40,1000" class="timeline-wire-track" stroke-width="4" stroke-linecap="round"/>
+        <path d="M 40,0 Q 15,125 40,250 T 40,500 T 40,750 T 40,1000" class="timeline-wire-draw" id="timelineWireDraw" stroke-width="4" stroke-linecap="round"/>
       </svg>
     </div>
 
@@ -304,31 +301,12 @@
       {{-- Alternating Steps Timeline --}}
       <div class="flex flex-col relative">
         @php
-          $steps = [
-            [
-              'title' => 'Discover',
-              'desc' => 'Mapping tujuan, audience, dan konten penting agar strategi digital terarah dan menghasilkan dampak bisnis nyata.',
-              'metric' => 'Taktik, Riset, & Rencana',
-              'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20"/></svg>'
-            ],
-            [
-              'title' => 'Design',
-              'desc' => 'Visual premium, asimetris, grid-breaking, mobile-first. Kami merancang identitas visual modern unik yang memikat pengunjung sejak pandangan pertama.',
-              'metric' => 'UI/UX & Estetika High-End',
-              'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122l.18.18a3 3 0 004.3 0l6.19-6.19a3 3 0 00-4.3-4.3l-6.19 6.19a3 3 0 000 4.3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 12.5L9.75 14h1.5l.375-1.5 M3 21v-3h3"/></svg>'
-            ],
-            [
-              'title' => 'Build',
-              'desc' => 'Laravel, MySQL, React, Three.js. Kami memodernisasi kode program menjadi modular, berkecepatan instan, responsif, dan mudah dikelola melalui CMS Admin Panel khusus.',
-              'metric' => 'Clean Code & 3D Hologram',
-              'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>'
-            ],
-            [
-              'title' => 'Launch',
-              'desc' => 'Pengujian fungsionalitas ketat, optimasi SEO instan, konfigurasi domain, penyebaran ke VPS berkinerja tinggi, dan serah terima data administratif.',
-              'metric' => 'Zero-Downtime VPS Deploy',
-              'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.59 8.42m5.84 5.95a14.98 14.98 0 01-5.84-5.95m0 0a14.98 14.98 0 00-6.16 12.12A14.98 14.98 0 009.59 8.42m0 0H3.75v5.625h5.625"/></svg>'
-            ]
+          $steps = $site->process_steps ?? [];
+          $svgMap = [
+              'discover' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20"/></svg>',
+              'design' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122l.18.18a3 3 0 004.3 0l6.19-6.19a3 3 0 00-4.3-4.3l-6.19 6.19a3 3 0 000 4.3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 12.5L9.75 14h1.5l.375-1.5 M3 21v-3h3"/></svg>',
+              'build' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>',
+              'launch' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.59 8.42m5.84 5.95a14.98 14.98 0 01-5.84-5.95m0 0a14.98 14.98 0 00-6.16 12.12A14.98 14.98 0 009.59 8.42m0 0H3.75v5.625h5.625"/></svg>'
           ];
         @endphp
 
@@ -336,6 +314,7 @@
           @php
             $isEven = $index % 2 === 0;
             $stepClass = $isEven ? 'timeline-step-left' : 'timeline-step-right';
+            $stepIcon = strtolower($step['icon'] ?? $step['title'] ?? '');
           @endphp
           <div class="timeline-step-row {{ $stepClass }}" data-step-index="{{ $index }}">
             <div class="timeline-node-dot"></div>
@@ -345,17 +324,17 @@
                 <div class="timeline-accordion-header">
                   <div class="flex items-center gap-3">
                     <span class="text-zinc-600 font-mono text-xs select-none">0{{ $index + 1 }} //</span>
-                    <h3>{{ __($step['title']) }}</h3>
+                    <h3>{{ $step['title'] ?? '' }}</h3>
                   </div>
                   <div class="timeline-accordion-icon">
-                    {!! $step['svg'] !!}
+                    {!! $svgMap[$stepIcon] ?? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20"/></svg>' !!}
                   </div>
                 </div>
                 
                 <div class="timeline-accordion-content">
-                  <span class="block text-[11px] font-mono uppercase tracking-wider mb-2" style="color:var(--purple)">{{ $step['metric'] }}</span>
+                  <span class="block text-[11px] font-mono uppercase tracking-wider mb-2" style="color:var(--purple)">{{ $step['metric'] ?? '' }}</span>
                   <p class="timeline-accordion-desc">
-                    {{ __($step['desc']) }}
+                    {{ $step['body'] ?? $step['desc'] ?? '' }}
                   </p>
                 </div>
               </div>
@@ -493,6 +472,8 @@
       </div>
     </div>
   </section>
+
+
 
   @include('partials.footer')
   @include('partials.command-center')

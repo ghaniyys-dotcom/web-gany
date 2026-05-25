@@ -7,7 +7,8 @@ class SiteSetting extends Model
         'hero_subtitle', 'hero_subtitle_en', 'primary_cta', 'primary_cta_en',
         'secondary_cta', 'secondary_cta_en', 'email', 'whatsapp', 'admin_password_hash',
         'services', 'services_en', 'works', 'stats', 'stats_en', 'estimator_enabled', 'estimator_pricing', 'budget_ranges',
-        'newsletter_title', 'newsletter_title_en', 'newsletter_desc', 'newsletter_desc_en'
+        'newsletter_title', 'newsletter_title_en', 'newsletter_desc', 'newsletter_desc_en',
+        'process_steps', 'process_steps_en'
     ];
 
     protected $casts = [
@@ -18,7 +19,9 @@ class SiteSetting extends Model
         'stats_en' => 'array',
         'estimator_enabled' => 'boolean',
         'estimator_pricing' => 'array',
-        'budget_ranges' => 'array'
+        'budget_ranges' => 'array',
+        'process_steps' => 'array',
+        'process_steps_en' => 'array'
     ];
 
     public function getTaglineAttribute($value)
@@ -73,6 +76,21 @@ class SiteSetting extends Model
     {
         if (app()->getLocale() === 'en' && !empty($this->stats_en)) {
             return is_string($this->stats_en) ? json_decode($this->stats_en, true) : $this->stats_en;
+        }
+        return is_string($value) ? json_decode($value, true) : $value;
+    }
+
+    public function getProcessStepsAttribute($value)
+    {
+        if (app()->getLocale() === 'en') {
+            $enVal = $this->process_steps_en;
+            if (empty($enVal)) {
+                return self::defaults()['process_steps_en'];
+            }
+            return is_string($enVal) ? json_decode($enVal, true) : $enVal;
+        }
+        if (empty($value)) {
+            return self::defaults()['process_steps'];
         }
         return is_string($value) ? json_decode($value, true) : $value;
     }
@@ -158,6 +176,58 @@ class SiteSetting extends Model
                 ['tag' => 'Corporate Website', 'title' => 'Nebula Capital', 'body' => 'Investor-grade web profile dengan data storytelling, credibility blocks, dan high-trust contact journey.'],
                 ['tag' => 'Product Launch', 'title' => 'OrbitOS', 'body' => 'Launch page SaaS dengan dashboard preview dan pricing-ready layout.'],
                 ['tag' => 'Brand Refresh', 'title' => 'Velora Studio', 'body' => 'Portfolio architecture untuk creative studio biar case study lebih menjual.']
+            ],
+            'process_steps' => [
+                [
+                    'icon' => 'Discover',
+                    'title' => 'Discover',
+                    'metric' => 'Taktik, Riset, & Rencana',
+                    'body' => 'Mapping tujuan, audience, dan konten penting agar strategi digital terarah dan menghasilkan dampak bisnis nyata.'
+                ],
+                [
+                    'icon' => 'Design',
+                    'title' => 'Design',
+                    'metric' => 'UI/UX & Estetika High-End',
+                    'body' => 'Visual premium, asimetris, grid-breaking, mobile-first. Kami merancang identitas visual modern unik yang memikat pengunjung sejak pandangan pertama.'
+                ],
+                [
+                    'icon' => 'Build',
+                    'title' => 'Build',
+                    'metric' => 'Clean Code & 3D Hologram',
+                    'body' => 'Laravel, MySQL, React, Three.js. Kami memodernisasi kode program menjadi modular, berkecepatan instan, responsif, dan mudah dikelola melalui CMS Admin Panel khusus.'
+                ],
+                [
+                    'icon' => 'Launch',
+                    'title' => 'Launch',
+                    'metric' => 'Zero-Downtime VPS Deploy',
+                    'body' => 'Pengujian fungsionalitas ketat, optimasi SEO instan, konfigurasi domain, penyebaran ke VPS berkinerja tinggi, dan serah terima data administratif.'
+                ]
+            ],
+            'process_steps_en' => [
+                [
+                    'icon' => 'Discover',
+                    'title' => 'Discover',
+                    'metric' => 'Tactics, Research, & Plan',
+                    'body' => 'Mapping goals, audience, and essential content to ensure a structured digital strategy that delivers real business impact.'
+                ],
+                [
+                    'icon' => 'Design',
+                    'title' => 'Design',
+                    'metric' => 'UI/UX & High-End Aesthetics',
+                    'body' => 'Premium, asymmetric, grid-breaking, and mobile-first visuals. We design a unique modern visual identity that captivates visitors at first sight.'
+                ],
+                [
+                    'icon' => 'Build',
+                    'title' => 'Build',
+                    'metric' => 'Clean Code & 3D Hologram',
+                    'body' => 'Laravel, MySQL, React, Three.js. We modernize codebases into modular, instant-speed, responsive systems easily managed via a custom CMS Admin Panel.'
+                ],
+                [
+                    'icon' => 'Launch',
+                    'title' => 'Launch',
+                    'metric' => 'Zero-Downtime VPS Deploy',
+                    'body' => 'Rigorous functionality testing, instant SEO optimization, domain configuration, high-performance VPS deployment, and administrative hand-off.'
+                ]
             ]
         ];
     }}

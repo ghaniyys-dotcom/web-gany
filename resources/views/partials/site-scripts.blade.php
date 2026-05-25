@@ -145,6 +145,12 @@
           }
         }
         mountText.innerHTML = html;
+
+        // Hide trailing cursor once typing completes
+        const cursorEl = scrambleTitle.querySelector('.animate-pulse');
+        if (cursorEl) {
+          cursorEl.style.display = 'none';
+        }
       }
     }
     
@@ -387,11 +393,35 @@
         
         card.style.transform = `translate3d(${pullX}px, ${pullY}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
         card.style.transition = 'none';
+
+        // Dynamic Sheen Calculation
+        const pctX = ((e.clientX - rect.left) / rect.width) * 100;
+        const pctY = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--sheen-x', `${pctX}%`);
+        card.style.setProperty('--sheen-y', `${pctY}%`);
+        card.style.setProperty('--sheen-opacity', '1');
+
+        // Inverse Image Parallax
+        const img = card.querySelector('.bento-media-img');
+        if (img) {
+          img.style.transform = `scale(1.12) translate3d(${-pullX * 0.5}px, ${-pullY * 0.5}px, 0)`;
+          img.style.transition = 'none';
+        }
       });
       
       card.addEventListener('mouseleave', function() {
         card.style.transform = 'translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg)';
         card.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+
+        // Reset Sheen
+        card.style.setProperty('--sheen-opacity', '0');
+
+        // Reset Inverse Parallax
+        const img = card.querySelector('.bento-media-img');
+        if (img) {
+          img.style.transform = 'scale(1.12) translate3d(0, 0, 0)';
+          img.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        }
       });
     });
   });
@@ -403,6 +433,43 @@
     const steps = document.querySelectorAll('.timeline-step-row');
     
     if (wireDraw && processSection) {
+      const container = document.querySelector('.timeline-wire-container');
+      const track = document.querySelector('.timeline-wire-track');
+      
+      // 📐 Dynamically align winding Bezier path to the physical vertical center of each node
+      function alignTimelineWire() {
+        if (!container || !track || !wireDraw) return;
+        const dots = document.querySelectorAll('.timeline-node-dot');
+        if (dots.length === 0) return;
+        
+        const containerRect = container.getBoundingClientRect();
+        const totalHeight = containerRect.height;
+        
+        // Map Y coordinates of each dot to the 0-1000 coordinate space of SVG viewBox
+        const svgY = Array.from(dots).map(dot => {
+          const dotRect = dot.getBoundingClientRect();
+          const relativeY = (dotRect.top + dotRect.height / 2) - containerRect.top;
+          return (relativeY / totalHeight) * 1000;
+        });
+        
+        // Build smooth winding path running exactly through x = 40 (center) at each dot's y position
+        const d = `M 40,0 ` +
+                  `Q 15,${svgY[0] / 2} 40,${svgY[0]} ` +
+                  `T 40,${svgY[1]} ` +
+                  `T 40,${svgY[2]} ` +
+                  `T 40,${svgY[3]} ` +
+                  `L 40,1000`;
+                  
+        track.setAttribute('d', d);
+        wireDraw.setAttribute('d', d);
+        
+        const pathLength = wireDraw.getTotalLength();
+        wireDraw.style.strokeDasharray = pathLength;
+      }
+      
+      alignTimelineWire();
+      window.addEventListener('resize', alignTimelineWire);
+      
       window.addEventListener('scroll', function() {
         const rect = processSection.getBoundingClientRect();
         const sectionHeight = rect.height;
@@ -412,8 +479,8 @@
         let progress = scrollDistance / sectionHeight;
         progress = Math.max(0, Math.min(1, progress));
         
-        const maxOffset = 1000;
-        const offset = maxOffset - (progress * maxOffset);
+        const pathLength = wireDraw.getTotalLength();
+        const offset = pathLength - (progress * pathLength);
         wireDraw.style.strokeDashoffset = offset;
         
         steps.forEach(step => {
@@ -429,6 +496,7 @@
   });
 
   window.toggleTimelineAccordion = function(box) {
+    const row = box.closest('.timeline-step-row');
     const isOpen = box.classList.contains('open');
     const content = box.querySelector('.timeline-accordion-content');
     
@@ -438,8 +506,13 @@
       if (otherContent) otherContent.style.maxHeight = '0px';
     });
     
+    document.querySelectorAll('.timeline-step-row').forEach(otherRow => {
+      otherRow.classList.remove('open-step');
+    });
+    
     if (!isOpen) {
       box.classList.add('open');
+      if (row) row.classList.add('open-step');
       content.style.maxHeight = '250px';
       if (window.FluxoraAudio) window.FluxoraAudio.playTactileClick();
     } else {
@@ -448,4 +521,4 @@
     }
   };
 </script>
-<script src="{{ asset('js/site-scripts.js') }}" defer></script>
+<script src="{{ asset('js/site-scripts.js') }}?v={{ filemtime(public_path('js/site-scripts.js')) }}" defer></script>

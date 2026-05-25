@@ -101,7 +101,9 @@
   transform: scale(0.9) translateY(20px);
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .cc-glow-orb {
   position: absolute;
@@ -212,6 +214,7 @@
   max-height: 250px;
   overflow-y: auto;
   padding-right: 6px;
+  -webkit-overflow-scrolling: touch;
 }
 .cc-commands-list::-webkit-scrollbar {
   width: 4px;

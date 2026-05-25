@@ -44,6 +44,8 @@ $pricing = $site->estimator_pricing ?? [
     'base_prices' => ['landing' => 3000000, 'compro' => 6000000, 'custom' => 12000000],
     'feature_prices' => ['animation' => 1500000, 'admin' => 2500000, 'seo' => 1000000, 'multilang' => 2000000]
 ];
+$process_steps = collect($site->process_steps ?? [])->map(fn($x) => ($x['icon'] ?? '') . ' | ' . ($x['title'] ?? '') . ' | ' . ($x['metric'] ?? '') . ' | ' . ($x['body'] ?? $x['desc'] ?? ''))->implode("\n");
+$process_steps_en = collect($site->process_steps_en ?? [])->map(fn($x) => ($x['icon'] ?? '') . ' | ' . ($x['title'] ?? '') . ' | ' . ($x['metric'] ?? '') . ' | ' . ($x['body'] ?? $x['desc'] ?? ''))->implode("\n");
 @endphp
 
 <div class="card">
@@ -191,6 +193,22 @@ $pricing = $site->estimator_pricing ?? [
             <div class="field">
                 <label style="font-size: 12px; color: #ff5500;">English version</label>
                 <textarea id="services_lines_en" name="services_lines_en" style="min-height:140px">{{ old('services_lines_en',$services_en) }}</textarea>
+            </div>
+        </div>
+
+        <!-- Process Steps Bilingual Group -->
+        <div style="background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="color: #fff; margin: 0; font-size: 14px; font-weight: 500;">Process Steps (Timeline) — format per baris: icon/key | title | metric/tagline | description</h4>
+                <button type="button" style="background: rgba(57, 255, 20, 0.1); color: var(--green); border: 1px solid rgba(57, 255, 20, 0.3); padding: 5px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: 'Space Grotesk';" onclick="translateField('process_steps_lines', 'process_steps_lines_en', this)">⚡ Auto-Translate</button>
+            </div>
+            <div class="field" style="margin-bottom: 12px;">
+                <label style="font-size: 12px; color: var(--muted);">Indonesian version</label>
+                <textarea id="process_steps_lines" name="process_steps_lines" style="min-height:140px">{{ old('process_steps_lines',$process_steps) }}</textarea>
+            </div>
+            <div class="field">
+                <label style="font-size: 12px; color: #ff5500;">English version</label>
+                <textarea id="process_steps_lines_en" name="process_steps_lines_en" style="min-height:140px">{{ old('process_steps_lines_en',$process_steps_en) }}</textarea>
             </div>
         </div>
 

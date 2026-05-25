@@ -122,6 +122,8 @@ class AdminController extends Controller
         $data['stats_en'] = $this->parseLines($request->input('stats_lines_en'), 2, ['value', 'label']);
         $data['services'] = $this->parseLines($request->input('services_lines'), 3, ['icon', 'title', 'body']);
         $data['services_en'] = $this->parseLines($request->input('services_lines_en'), 3, ['icon', 'title', 'body']);
+        $data['process_steps'] = $this->parseLines($request->input('process_steps_lines'), 4, ['icon', 'title', 'metric', 'body']);
+        $data['process_steps_en'] = $this->parseLines($request->input('process_steps_lines_en'), 4, ['icon', 'title', 'metric', 'body']);
         
         // Parse works
         $worksData = $this->parseLines($request->input('works_lines'), 10, ['tag', 'title', 'body', 'image_url', 'project_url', 'client', 'challenge', 'solution', 'tech_stack', 'results']);
@@ -349,18 +351,18 @@ class AdminController extends Controller
         $intro = IntroSetting::current();
         $intro->update([
             'is_enabled'           => $request->boolean('is_enabled'),
-            'greeting'             => $request->input('greeting', 'Halo 👋'),
-            'greeting_en'          => $request->input('greeting_en'),
-            'name'                 => $request->input('name', ''),
+            'greeting'             => $request->input('greeting') ?: 'Halo 👋',
+            'greeting_en'          => $request->input('greeting_en') ?: null,
+            'name'                 => $request->input('name') ?: 'gany',
             'roles'                => array_filter(array_map('trim', explode("\n", $request->input('roles_text', '')))),
-            'tagline'              => $request->input('tagline', ''),
-            'tagline_en'           => $request->input('tagline_en'),
-            'cta_text'             => $request->input('cta_text', 'Lihat Karya Gua →'),
-            'cta_text_en'          => $request->input('cta_text_en'),
+            'tagline'              => $request->input('tagline') ?: null,
+            'tagline_en'           => $request->input('tagline_en') ?: null,
+            'cta_text'             => $request->input('cta_text') ?: 'see my projects',
+            'cta_text_en'          => $request->input('cta_text_en') ?: null,
             'availability_enabled' => $request->boolean('availability_enabled'),
             'is_available'         => $request->boolean('is_available'),
-            'availability_text'    => $request->input('availability_text', ''),
-            'availability_text_en' => $request->input('availability_text_en'),
+            'availability_text'    => $request->input('availability_text') ?: '',
+            'availability_text_en' => $request->input('availability_text_en') ?: '',
             'expertise_tickers'    => array_filter(array_map('trim', explode("\n", $request->input('tickers_text', '')))),
         ]);
         Log::info('Intro settings updated', ['ip' => $request->ip()]);

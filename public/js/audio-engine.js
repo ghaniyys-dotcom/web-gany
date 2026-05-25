@@ -15,6 +15,8 @@ class FluxoraSynth {
     this.droneFilter = null;
     this.droneLfo = null;
     this.initialized = false;
+    this.activitySwell = 0; // scroll/mouse activity level [0.0 - 1.0]
+    this.physicsRunning = false;
   }
 
   init() {
@@ -35,6 +37,9 @@ class FluxoraSynth {
 
     this.initialized = true;
 
+    // Start physical dynamic lerping loop
+    this.startDronePhysics();
+
     // Handle resume if state is suspended (standard browser safety mechanism)
     if (!this.isMuted && this.ctx.state === 'suspended') {
       const resume = () => {
@@ -52,25 +57,25 @@ class FluxoraSynth {
   setupAtmosphericDrone() {
     if (!this.ctx || !this.masterGain) return;
 
-    // Create filter for dark warm soundscape
+    // Create filter for dark warm soundscape (low resonance for ultra-smoothness)
     this.droneFilter = this.ctx.createBiquadFilter();
     this.droneFilter.type = 'lowpass';
-    this.droneFilter.frequency.setValueAtTime(140, this.ctx.currentTime);
-    this.droneFilter.Q.setValueAtTime(2.0, this.ctx.currentTime);
+    this.droneFilter.frequency.setValueAtTime(130, this.ctx.currentTime);
+    this.droneFilter.Q.setValueAtTime(0.7, this.ctx.currentTime);
 
-    // Create drone gain (very soft to keep it premium and subtle)
+    // Create drone gain (soft and subtle for warm background elegance)
     this.droneGain = this.ctx.createGain();
-    this.droneGain.gain.setValueAtTime(0.035, this.ctx.currentTime);
+    this.droneGain.gain.setValueAtTime(0.025, this.ctx.currentTime);
 
-    // Drone Oscillator 1: Deep sub warm triangle (A0 = 55Hz)
+    // Drone Oscillator 1: Deep warm sub sine (A0 = 55Hz)
     this.droneOsc1 = this.ctx.createOscillator();
-    this.droneOsc1.type = 'triangle';
+    this.droneOsc1.type = 'sine';
     this.droneOsc1.frequency.setValueAtTime(55, this.ctx.currentTime);
 
-    // Drone Oscillator 2: Mild detuned sawtooth octave (A1 = 110.4Hz)
+    // Drone Oscillator 2: Smooth glassy perfect fifth triangle (E2 = 82.4Hz)
     this.droneOsc2 = this.ctx.createOscillator();
-    this.droneOsc2.type = 'sawtooth';
-    this.droneOsc2.frequency.setValueAtTime(110.4, this.ctx.currentTime);
+    this.droneOsc2.type = 'triangle';
+    this.droneOsc2.frequency.setValueAtTime(82.4, this.ctx.currentTime);
 
     // Route drone components
     this.droneOsc1.connect(this.droneFilter);
@@ -78,13 +83,13 @@ class FluxoraSynth {
     this.droneFilter.connect(this.droneGain);
     this.droneGain.connect(this.masterGain);
 
-    // Create LFO (Low-Frequency Oscillator) to sweep filter frequency for movement
+    // Create LFO to sweep filter frequency for very slow breathing movement
     this.droneLfo = this.ctx.createOscillator();
     this.droneLfo.type = 'sine';
-    this.droneLfo.frequency.setValueAtTime(0.08, this.ctx.currentTime); // very slow swell (12 seconds cycle)
+    this.droneLfo.frequency.setValueAtTime(0.05, this.ctx.currentTime); // slow breathing (20-second cycle)
 
     const lfoGain = this.ctx.createGain();
-    lfoGain.gain.setValueAtTime(45, this.ctx.currentTime); // Modulate by +/- 45Hz
+    lfoGain.gain.setValueAtTime(12, this.ctx.currentTime); // Modulate by +/- 12Hz
 
     this.droneLfo.connect(lfoGain);
     lfoGain.connect(this.droneFilter.frequency);
@@ -237,6 +242,153 @@ class FluxoraSynth {
     subOsc.stop(now + 1.3);
   }
 
+  // Procedure: procedurally synthesize a high-end elegant cosmic big bang explosion
+  playCosmicExplosion() {
+    this.init();
+    if (this.isMuted || !this.ctx) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+
+    // 1. Deep Kinetic Sub-Bass Swell (Sine falling from 160Hz to 30Hz)
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(160, now);
+    subOsc.frequency.exponentialRampToValueAtTime(30, now + 1.8);
+
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(0.35, now);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 1.85);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain);
+
+    // 2. High-Tech Shimmer Spark (Triangle sweep from 1500Hz to 600Hz, quick splash)
+    const splashOsc = this.ctx.createOscillator();
+    splashOsc.type = 'triangle';
+    splashOsc.frequency.setValueAtTime(1500, now);
+    splashOsc.frequency.exponentialRampToValueAtTime(600, now + 0.35);
+
+    const splashGain = this.ctx.createGain();
+    splashGain.gain.setValueAtTime(0.05, now);
+    splashGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    splashOsc.connect(splashGain);
+    splashGain.connect(this.masterGain);
+
+    // 3. Elegant Gas Whoosh (Bandpass noise sweep representing expander wave)
+    try {
+      const bufferSize = this.ctx.sampleRate * 1.5; // 1.5 seconds whoosh
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(450, now);
+      filter.frequency.exponentialRampToValueAtTime(1200, now + 0.25);
+      filter.frequency.exponentialRampToValueAtTime(150, now + 1.4);
+      filter.Q.setValueAtTime(1.8, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.04, now);
+      noiseGain.gain.linearRampToValueAtTime(0.12, now + 0.2); // expander peak
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.masterGain);
+
+      noise.start(now);
+      noise.stop(now + 1.5);
+    } catch(e) {}
+
+    subOsc.start(now);
+    subOsc.stop(now + 1.9);
+    splashOsc.start(now);
+    splashOsc.stop(now + 0.4);
+  }
+
+  // Procedure: procedurally synthesize a reverse cosmic implosion recall that locks nodes in place
+  playCosmicRecall() {
+    this.init();
+    if (this.isMuted || !this.ctx) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+    const duration = 1.4; // matches 0.4s to 1.8s duration
+
+    // 1. Swelling Implosion Whine (Sine sweep rising from 90Hz to 480Hz)
+    const riseOsc = this.ctx.createOscillator();
+    riseOsc.type = 'sine';
+    riseOsc.frequency.setValueAtTime(90, now);
+    riseOsc.frequency.exponentialRampToValueAtTime(480, now + duration);
+
+    const riseGain = this.ctx.createGain();
+    riseGain.gain.setValueAtTime(0.001, now);
+    riseGain.gain.exponentialRampToValueAtTime(0.12, now + duration);
+
+    riseOsc.connect(riseGain);
+    riseGain.connect(this.masterGain);
+
+    // 2. Whoosh Swell (Filter-modulated noise rising sweep)
+    try {
+      const bufferSize = this.ctx.sampleRate * duration;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(100, now);
+      filter.frequency.exponentialRampToValueAtTime(650, now + duration);
+      filter.Q.setValueAtTime(3.0, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.001, now);
+      noiseGain.gain.linearRampToValueAtTime(0.06, now + duration);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.masterGain);
+
+      noise.start(now);
+      noise.stop(now + duration + 0.05);
+    } catch(e) {}
+
+    riseOsc.start(now);
+    riseOsc.stop(now + duration + 0.05);
+
+    // 3. Locking click/ding (Procedural glassy chime precisely at recall completion)
+    const chimeTime = now + duration;
+    
+    const chimeOsc = this.ctx.createOscillator();
+    chimeOsc.type = 'triangle';
+    chimeOsc.frequency.setValueAtTime(1200, chimeTime);
+    chimeOsc.frequency.exponentialRampToValueAtTime(80, chimeTime + 0.15);
+
+    const chimeGain = this.ctx.createGain();
+    chimeGain.gain.setValueAtTime(0, chimeTime - 0.01);
+    chimeGain.gain.setValueAtTime(0.05, chimeTime);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, chimeTime + 0.15);
+
+    chimeOsc.connect(chimeGain);
+    chimeGain.connect(this.masterGain);
+
+    chimeOsc.start(chimeTime);
+    chimeOsc.stop(chimeTime + 0.2);
+  }
+
   toggleMute() {
     this.init();
     if (!this.ctx) return this.isMuted;
@@ -261,9 +413,60 @@ class FluxoraSynth {
       // Fade in
       this.masterGain.gain.setValueAtTime(0.001, now);
       this.masterGain.gain.exponentialRampToValueAtTime(0.4, now + 0.25);
+      this.startDronePhysics();
     }
 
     return this.isMuted;
+  }
+
+  // Increment dynamic activity level
+  triggerActivitySwell(amount) {
+    this.init();
+    this.activitySwell = Math.min(this.activitySwell + amount, 1.0);
+  }
+
+  // Smooth audio-rate physical simulation loop
+  startDronePhysics() {
+    if (this.physicsRunning) return;
+    this.physicsRunning = true;
+
+    const updateLoop = () => {
+      if (!this.initialized || this.isMuted || !this.ctx) {
+        this.physicsRunning = false;
+        return;
+      }
+
+      // Smooth decay of activity velocity
+      this.activitySwell *= 0.95;
+      if (this.activitySwell < 0.001) this.activitySwell = 0;
+
+      // Base: Osc1 = 55Hz (A0 sub), Osc2 = 82.4Hz (E2 pad fifth), Lowpass Filter = 130Hz
+      // Peak: Sub stays warm (+2Hz), Pad has a mild float (+5.6Hz), Filter opens gently (+50Hz)
+      const baseFreq1 = 55;
+      const baseFreq2 = 82.4;
+      const baseFilter = 130;
+
+      const targetFreq1 = baseFreq1 + this.activitySwell * 2;
+      const targetFreq2 = baseFreq2 + this.activitySwell * 5.6;
+      const targetFilter = baseFilter + this.activitySwell * 50;
+
+      const now = this.ctx.currentTime;
+
+      // Apply lowpass filtering to eliminate audio-rate clicks
+      if (this.droneOsc1) {
+        this.droneOsc1.frequency.setTargetAtTime(targetFreq1, now, 0.08);
+      }
+      if (this.droneOsc2) {
+        this.droneOsc2.frequency.setTargetAtTime(targetFreq2, now, 0.08);
+      }
+      if (this.droneFilter) {
+        this.droneFilter.frequency.setTargetAtTime(targetFilter, now, 0.08);
+      }
+
+      requestAnimationFrame(updateLoop);
+    };
+
+    requestAnimationFrame(updateLoop);
   }
 }
 

@@ -342,17 +342,19 @@ if (cursor && aura && window.matchMedia('(hover:hover)').matches) {
   requestAnimationFrame(renderCursor);
 
   const updateInteractiveListeners = () => {
-    const snaps = 'a.btn, button.btn, .nav-link, .intro-skip, .theme-toggle, .budget-card, .social-icon, .btn-primary, .btn-ghost';
+    const snaps = 'a.btn, button.btn, .nav-link, .intro-skip, .theme-toggle, .budget-card, .social-icon, .btn-primary, .btn-ghost, .bento-filter-pill, .bento-archives-link';
     document.querySelectorAll(snaps).forEach(el => {
       if (el.dataset.cursorSnappedBound) return;
       el.dataset.cursorSnappedBound = 'true';
 
       el.addEventListener('mouseenter', () => {
         activeSnappedEl = el;
+        el.style.transition = 'none';
         document.body.classList.add('cursor-snapped');
       });
       el.addEventListener('mouseleave', () => {
         const prevEl = el;
+        prevEl.style.transition = '';
         prevEl.classList.add('magnetic-releasing');
         prevEl.style.transform = '';
         setTimeout(() => {
@@ -372,7 +374,6 @@ if (cursor && aura && window.matchMedia('(hover:hover)').matches) {
       el.dataset.cursorProjectBound = 'true';
 
       el.addEventListener('mouseenter', () => {
-        if (cursorLabel) cursorLabel.textContent = 'VIEW ↗';
         document.body.classList.add('cursor-view-project');
       });
       el.addEventListener('mouseleave', () => {
@@ -814,6 +815,9 @@ function dismissIntro(){
   if(!introOverlay)return;
   sessionStorage.setItem('pm_intro_seen','1');
   
+  // Dispatch custom event to trigger 3D Big Bang explosion!
+  window.dispatchEvent(new CustomEvent('intro-dismissed'));
+  
   if (window.FluxoraAudio && typeof window.FluxoraAudio.playCurtainBassDrop === 'function') {
     window.FluxoraAudio.playCurtainBassDrop();
   }
@@ -840,60 +844,20 @@ function initEmberParticles(){
   window.addEventListener('resize',resize);
 
   const particles=[];
-  const COUNT=50;
+  const COUNT=12; // Extremely sparse and elegant
   for(let i=0;i<COUNT;i++){
     particles.push({
       x:Math.random()*W,
-      y:H+Math.random()*100,
-      vx:(Math.random()-0.5)*0.8,
-      vy:-(0.3+Math.random()*1.2),
-      r:1+Math.random()*2.5,
-      alpha:0.3+Math.random()*0.7,
-      hue:15+Math.random()*30,
-      life:0.5+Math.random()*0.5,
-      decay:0.0003+Math.random()*0.001,
-      isSpark: false
+      y:Math.random()*H,
+      vx:(Math.random()-0.5)*0.15, // Extremely slow drift
+      vy:-(0.05+Math.random()*0.1),
+      r:30+Math.random()*45, // Defocused giant bokeh circle size
+      alpha:0.02+Math.random()*0.03, // Barely visible elegant luminosity
+      hue:24+Math.random()*12, // Pristine warm amber/gold hues
+      life:0.6+Math.random()*0.4,
+      decay:0.0001+Math.random()*0.0002
     });
   }
-
-  let pmX = -999, pmY = -999;
-  let lastPmX = -999, lastPmY = -999;
-
-  const handleParticleMouse = e => {
-    lastPmX = pmX;
-    lastPmY = pmY;
-    pmX = e.clientX;
-    pmY = e.clientY;
-
-    if (lastPmX !== -999 && Math.random() < 0.55) {
-      const dx = pmX - lastPmX;
-      const dy = pmY - lastPmY;
-      const speed = Math.hypot(dx, dy);
-      
-      if (speed > 2) {
-        // Emit more sparks with physics drift
-        const countToSpawn = Math.min(Math.floor(speed / 3), 4) + 1;
-        for(let s=0; s<countToSpawn; s++) {
-          const vx = dx * 0.15 + (Math.random() - 0.5) * 1.5;
-          const vy = dy * 0.15 - Math.random() * 1.0 - 0.4;
-          particles.push({
-            x: pmX + (Math.random() - 0.5) * 6,
-            y: pmY + (Math.random() - 0.5) * 6,
-            vx: vx,
-            vy: vy,
-            r: 0.8 + Math.random() * 2.2,
-            alpha: 0.9 + Math.random() * 0.1,
-            hue: Math.random() < 0.35 ? 175 + Math.random() * 20 : 16 + Math.random() * 22, // Neon cyan or warm orange sparks!
-            life: 0.7 + Math.random() * 0.3,
-            decay: 0.004 + Math.random() * 0.006,
-            isSpark: true
-          });
-        }
-      }
-    }
-  };
-
-  window.addEventListener('mousemove', handleParticleMouse, { passive: true });
 
   function drawEmbers(){
     ctx.clearRect(0,0,W,H);
@@ -902,40 +866,33 @@ function initEmberParticles(){
     particles.forEach(p=>{
       p.x+=p.vx;
       p.y+=p.vy;
-      p.vx+=(Math.random()-0.5)*0.05;
       p.life-=p.decay;
 
-      // Dynamic cursor ember gravity pull attraction
-      if (pmX !== -999 && pmY !== -999) {
-        const dx = pmX - p.x;
-        const dy = pmY - p.y;
-        const dist = Math.hypot(dx, dy);
-        
-        if (dist < 200) {
-          const force = (200 - dist) / 200;
-          p.x += (dx / dist) * force * 2.5;
-          p.y += (dy / dist) * force * 2.5;
-        }
-      }
+      // Keep drifting bokeh circular paths smooth
+      p.vx+=(Math.random()-0.5)*0.008;
 
       if (p.life > 0) {
         activeParticles.push(p);
 
         const a=p.alpha*p.life;
+        // Render giant defocused bokeh gradient orb
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        grad.addColorStop(0, `hsla(${p.hue}, 90%, 55%, ${a})`);
+        grad.addColorStop(0.4, `hsla(${p.hue}, 90%, 50%, ${a * 0.3})`);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+
         ctx.beginPath();
         ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle=`hsla(${p.hue},100%,55%,${a})`;
+        ctx.fillStyle=grad;
         ctx.fill();
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);
-        ctx.fillStyle=`hsla(${p.hue},100%,50%,${a*0.15})`;
-        ctx.fill();
-      } else if (!p.isSpark) {
+      } else {
+        // Recycle slowly from the bottom with randomized radius
         p.x=Math.random()*W;
-        p.y=H+10;
-        p.life=0.5+Math.random()*0.5;
-        p.vx=(Math.random()-0.5)*0.8;
-        p.vy=-(0.3+Math.random()*1.2);
+        p.y=H+p.r;
+        p.life=0.7+Math.random()*0.3;
+        p.vx=(Math.random()-0.5)*0.15;
+        p.vy=-(0.05+Math.random()*0.1);
+        p.r=30+Math.random()*45;
         activeParticles.push(p);
       }
     });
@@ -955,33 +912,13 @@ if(introOverlay){
   }else{
     document.body.style.overflow='hidden';
     initEmberParticles();
-    const skipBtn=document.getElementById('introSkip');
-    if(skipBtn)skipBtn.addEventListener('click',dismissIntro);
-    document.getElementById('introCta')?.addEventListener('click',dismissIntro);
+    
+    // The entire screen functions as a passive click-through interaction
+    introOverlay.addEventListener('click', dismissIntro);
 
-    const roles=window._introRoles || [];
-    const roleEl=document.getElementById('iLine2');
-    const lines=[
-      document.getElementById('iLine0'),
-      document.getElementById('iLine1'),
-    ];
-    const taglineEl=document.getElementById('iLine3');
-    const ctaEl=document.getElementById('iLine4');
-    const totalSteps=lines.length+(roles.length>0?roles.length:0)+2;
-    let step=0;
+    const nameEl = document.getElementById('iLine1');
 
-    function setProgress(p){
-      if(introProgress)introProgress.style.width=(p*100)+'%';
-    }
-
-    // Direct text reveal with smooth CSS blur/glow transitions
-    function decryptText(element, finalString, duration = 800) {
-      if (!element) return;
-      element.textContent = finalString;
-      element.classList.add('visible');
-    }
-
-    async function showLine(el, delay, decrypt = false) {
+    async function showLine(el, delay) {
       return new Promise(res => {
         if (!el) return res();
         setTimeout(() => {
@@ -992,31 +929,9 @@ if(introOverlay){
     }
 
     async function runIntro(){
-      await new Promise(r=>setTimeout(r,400));
-      await showLine(lines[0], 0);
-      step++;setProgress(step/totalSteps);
-      await showLine(lines[1], 500);
-      step++;setProgress(step/totalSteps);
-
-      if(roleEl&&roles.length){
-        for(let i=0;i<roles.length;i++){
-          if (i > 0) {
-            roleEl.classList.remove('visible');
-            await new Promise(r=>setTimeout(r, 600));
-          }
-          roleEl.textContent = roles[i];
-          roleEl.classList.add('visible');
-          await new Promise(r=>setTimeout(r, 1600));
-          step++;setProgress(step/totalSteps);
-        }
-      }
-
       await new Promise(r=>setTimeout(r,300));
-      await showLine(taglineEl, 0);
-      step++;setProgress(step/totalSteps);
-      await new Promise(r=>setTimeout(r,500));
-      await showLine(ctaEl, 0);
-      setProgress(1);
+      // Fade in the 'halo' centerpiece
+      await showLine(nameEl, 150);
     }
     runIntro();
   }
@@ -1770,5 +1685,150 @@ if(themeBtn){
     }
   });
 }
+
+/* =================================================================
+   21. DYNAMIC SYNTH SCROLL & MOUSE ACTIVITY SWELL SENSOR
+   ================================================================= */
+let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+let lastScrollTime = Date.now();
+window.addEventListener('scroll', () => {
+  const st = window.pageYOffset || document.documentElement.scrollTop;
+  const now = Date.now();
+  const dt = Math.max(1, now - lastScrollTime);
+  const dy = Math.abs(st - lastScrollTop);
+  const velocity = dy / dt; // pixels per millisecond
+  
+  if (velocity > 0.05 && window.FluxoraAudio) {
+    window.FluxoraAudio.triggerActivitySwell(velocity * 0.16);
+  }
+  
+  lastScrollTop = st;
+  lastScrollTime = now;
+}, { passive: true });
+
+let lastMouseX = 0, lastMouseY = 0;
+let lastMouseTime = Date.now();
+window.addEventListener('mousemove', (e) => {
+  const now = Date.now();
+  const dt = Math.max(1, now - lastMouseTime);
+  const dx = Math.abs(e.clientX - lastMouseX);
+  const dy = Math.abs(e.clientY - lastMouseY);
+  const velocity = Math.hypot(dx, dy) / dt; // pixels per millisecond
+  
+  if (velocity > 0.1 && window.FluxoraAudio) {
+    window.FluxoraAudio.triggerActivitySwell(velocity * 0.045);
+  }
+  
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+  lastMouseTime = now;
+}, { passive: true });
+
+/* =================================================================
+   23. CINEMATIC FLIP CARD EXPANSION TRANSITION
+   ================================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const bentoGrid = document.querySelector('.bento-grid-custom');
+  if (!bentoGrid) return;
+
+  bentoGrid.addEventListener('click', (e) => {
+    const card = e.target.closest('.bento-card-custom');
+    if (!card) return;
+
+    const link = card.querySelector('.bento-overlay-details h3 a');
+    if (!link) return;
+
+    // Prevent default navigation
+    e.preventDefault();
+    const targetUrl = link.href;
+
+    // Play curtain bass drop sound if available
+    if (window.FluxoraAudio && typeof window.FluxoraAudio.playCurtainBassDrop === 'function') {
+      window.FluxoraAudio.playCurtainBassDrop();
+    } else if (window.FluxoraAudio) {
+      window.FluxoraAudio.playTactileClick();
+    }
+
+    // Get original card rect
+    const rect = card.getBoundingClientRect();
+
+    // Create custom clone for FLIP transition
+    const clone = card.cloneNode(true);
+    clone.classList.add('expanding-clone');
+    
+    // Style clone to match exactly the original card's position and look
+    clone.style.top = `${rect.top}px`;
+    clone.style.left = `${rect.left}px`;
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.margin = '0';
+    
+    // Inject clone into body
+    document.body.appendChild(clone);
+
+    // Fade out / blur the rest of the page content
+    const mainEl = document.querySelector('main');
+    const navEl = document.querySelector('nav');
+    if (mainEl) {
+      mainEl.style.transition = 'opacity 0.6s ease, filter 0.6s ease';
+      mainEl.style.opacity = '0.15';
+      mainEl.style.filter = 'blur(12px)';
+    }
+    if (navEl) {
+      navEl.style.transition = 'opacity 0.6s ease, filter 0.6s ease';
+      navEl.style.opacity = '0.15';
+      navEl.style.filter = 'blur(12px)';
+    }
+
+    // Trigger expansion in the next frame
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        clone.style.top = '0';
+        clone.style.left = '0';
+        clone.style.width = '100vw';
+        clone.style.height = '100vh';
+        clone.style.borderRadius = '0px';
+      });
+    });
+
+    // Navigate to page
+    setTimeout(() => {
+      window.location.href = targetUrl;
+    }, 650);
+  });
+});
+
+/* =================================================================
+   24. BROWSER BACK BUTTON (BFCACHE) RESTORE STATE REACTOR
+   ================================================================= */
+window.addEventListener('pageshow', (event) => {
+  // Always clean up expanding transition clones when page is shown
+  const clones = document.querySelectorAll('.expanding-clone');
+  clones.forEach(c => c.remove());
+
+  // Reset main content and navigation styles (blurs & opacities)
+  const mainEl = document.querySelector('main');
+  const navEl = document.querySelector('nav');
+  if (mainEl) {
+    mainEl.style.opacity = '';
+    mainEl.style.filter = '';
+    mainEl.style.transition = '';
+    mainEl.style.transform = '';
+  }
+  if (navEl) {
+    navEl.style.opacity = '';
+    navEl.style.filter = '';
+    navEl.style.transition = '';
+    navEl.style.transform = '';
+  }
+
+  // Restore page transition overlay back to ready leaving state
+  const ptOverlay = document.getElementById('pageTransition');
+  if (ptOverlay) {
+    ptOverlay.classList.remove('entering');
+    ptOverlay.classList.add('leaving');
+  }
+  document.body.classList.add('pm-page-ready');
+});
 
 })();

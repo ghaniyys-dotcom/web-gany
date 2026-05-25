@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
-import { motion } from 'framer-motion';
+import * as THREE from 'three';
 
 // Premium SVG Icon Registry for major web development technologies
 const svgRegistry = {
@@ -127,31 +127,89 @@ const svgRegistry = {
   ),
 };
 
-// Fallback premium high-tech glowing particle icon
+// Fallback high-tech particle icon
 const fallbackSvg = (
   <>
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M3 12h18M12 7.5l4.5 4.5-4.5 4.5-4.5-4.5z" />
   </>
 );
 
-// Individual Tech Logo Constellation Item
-const OrbitingLogo = ({ name, svgPath, speed, radius, yOffset, phase, isCyberTheme }) => {
+// Individual Tech Node placed on Sphere Constellation (With Z-space big bang explosion and giant hitboxes)
+const ConstellationNode = ({ name, skillIndex, totalSkills, targetPos, exploded, isCyberTheme }) => {
   const groupRef = useRef();
+  const haloRef = useRef();
   const [hovered, setHovered] = useState(false);
+  const explosionStartTime = useRef(null);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    const angle = time * speed + phase;
-
-    // Orbit coordinates on the X-Z plane (circular orbit with customized radius)
-    const x = Math.cos(angle) * radius;
-    const z = Math.sin(angle) * radius;
     
-    // Elegant vertical bobbing out of phase to create an organic wave ring
-    const y = Math.sin(time * 0.75 + phase * 2.0) * 0.3 + yOffset;
+    // Slow rotational swing based on parent sphere rotation
+    const baseRadius = 1.6;
+
+    // Spherical coordinates mapping (Golden ratio Fibonacci sphere)
+    const phi = Math.acos(-1 + (2 * skillIndex) / totalSkills);
+    const theta = Math.sqrt(totalSkills * Math.PI) * phi;
+    
+    // Orbital coordinates on the 3D globe surface
+    let x = baseRadius * Math.cos(theta) * Math.sin(phi);
+    let y = baseRadius * Math.sin(theta) * Math.sin(phi);
+    let z = baseRadius * Math.cos(phi);
+
+    // Apply slow global compound sphere revolution
+    const slowSpeed = time * 0.08;
+    const tempX = x * Math.cos(slowSpeed) - z * Math.sin(slowSpeed);
+    const tempZ = x * Math.sin(slowSpeed) + z * Math.cos(slowSpeed);
+    x = tempX;
+    z = tempZ;
 
     if (groupRef.current) {
-      groupRef.current.position.set(x, y, z);
+      // 💥 Sinematik BIG BANG EXPLOSION - Rushes off-screen completely, then snaps back!
+      let entranceMultiplier = 0.01; // tiny core at start
+      
+      if (exploded) {
+        if (explosionStartTime.current === null) {
+          explosionStartTime.current = time;
+        }
+        const elapsed = time - explosionStartTime.current;
+        
+        if (elapsed < 2.0) {
+          // Breathtaking Z-space explosion curve:
+          // elapsed=0 to 0.4s: rushes out to scale 22.0 (past camera/off-screen)
+          // elapsed=0.4s to 2.0s: recalls and snaps back to 1.0
+          if (elapsed < 0.4) {
+            const tExp = elapsed / 0.4;
+            entranceMultiplier = 0.01 + 21.99 * Math.pow(tExp, 2);
+          } else {
+            const tRec = (elapsed - 0.4) / 1.6;
+            entranceMultiplier = 22.0 + (1.0 - 22.0) * Math.sin(tRec * Math.PI * 0.5);
+          }
+        } else {
+          entranceMultiplier = 1.0;
+        }
+      }
+
+      const destX = x * entranceMultiplier;
+      const destY = y * entranceMultiplier;
+      const destZ = z * entranceMultiplier;
+
+      if (hovered) {
+        // Magnetic pull towards cursor coordinates in WebGL space
+        const targetPX = state.pointer.x * 2.8;
+        const targetPY = state.pointer.y * 2.2;
+        groupRef.current.position.x += (destX + (targetPX - destX) * 0.28 - groupRef.current.position.x) * 0.15;
+        groupRef.current.position.y += (destY + (targetPY - destY) * 0.28 - groupRef.current.position.y) * 0.15;
+        groupRef.current.position.z += (destZ - groupRef.current.position.z) * 0.15;
+        
+        // Rotate outer tech halo ring smoothly
+        if (haloRef.current) {
+          haloRef.current.rotation.x = time * 0.8;
+          haloRef.current.rotation.y = time * 1.2;
+          haloRef.current.rotation.z = time * 0.5;
+        }
+      } else {
+        groupRef.current.position.set(destX, destY, destZ);
+      }
     }
   });
 
@@ -159,35 +217,67 @@ const OrbitingLogo = ({ name, svgPath, speed, radius, yOffset, phase, isCyberThe
 
   return (
     <group ref={groupRef}>
-      <Html center distanceFactor={7.5} style={{ pointerEvents: 'auto' }}>
+      {/* 🛡️ INVISIBLE HIT SHIELD: 2x wider radius target makes hovering completely effortless */}
+      <mesh
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        style={{ cursor: 'pointer' }}
+      >
+        <sphereGeometry args={[0.85, 16, 16]} />
+        <meshBasicMaterial visible={false} />
+      </mesh>
+
+      {/* 🔮 Glowing Constellation vertex node - scales up by 2.8x on hover */}
+      <mesh scale={hovered ? [2.8, 2.8, 2.8] : [1.0, 1.0, 1.0]}>
+        <sphereGeometry args={[0.07, 16, 16]} />
+        <meshBasicMaterial 
+          color={hovered ? activeColor : 'rgba(255, 255, 255, 0.45)'} 
+          transparent
+          opacity={hovered ? 1.0 : 0.45}
+        />
+      </mesh>
+
+      {/* Orbit node outer neural halo rings - high-tech revolving wireframe */}
+      {hovered && (
+        <mesh ref={haloRef}>
+          <dodecahedronGeometry args={[0.22, 0]} />
+          <meshBasicMaterial color={activeColor} wireframe transparent opacity={0.45} />
+        </mesh>
+      )}
+
+      {/* Holographic Typographic Info Card - styled with Space Grotesk, border glow & backdrop blur */}
+      <Html center distanceFactor={7.5} style={{ pointerEvents: hovered ? 'auto' : 'none' }}>
         <div
           onPointerOver={() => setHovered(true)}
           onPointerOut={() => setHovered(false)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-md transition-all duration-300 transform select-none border whitespace-nowrap bg-black/60 ${
-            hovered
-              ? 'scale-110 border-orange-500/80'
-              : 'opacity-70 border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.5)]'
+          className={`flex items-center gap-2 select-none pointer-events-auto transition-all duration-500 transform ${
+            hovered 
+              ? 'opacity-100 scale-100 translate-x-4 translate-y-[-12px]' 
+              : 'opacity-0 scale-75 translate-x-0 pointer-events-none'
           }`}
           style={{
-            borderColor: hovered ? activeColor : 'rgba(255, 255, 255, 0.05)',
-            boxShadow: hovered
-              ? `0 0 25px ${activeColor}55, inset 0 0 10px ${activeColor}22`
-              : '0 0 10px rgba(0,0,0,0.4)',
-            cursor: 'pointer',
+            fontFamily: "'Space Grotesk', sans-serif",
           }}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={hovered ? activeColor : '#fff'}
-            strokeWidth="1.8"
-            className="w-5 h-5 transition-colors duration-300"
-          >
-            {svgPath}
-          </svg>
-          <span
-            className="text-[10px] font-medium tracking-wider uppercase transition-colors duration-300 font-sans"
-            style={{ color: hovered ? '#ffffff' : '#a1a1aa' }}
+          <div className="flex items-center gap-1.5" style={{ position: 'relative' }}>
+            <div className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: activeColor, position: 'absolute' }}></div>
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: activeColor, boxShadow: `0 0 10px ${activeColor}` }}></div>
+            <div className="w-8 h-px" style={{ backgroundColor: activeColor, opacity: 0.65 }}></div>
+          </div>
+
+          <span 
+            className="text-[11px] font-bold tracking-wider uppercase text-white whitespace-nowrap bg-black/90 px-3 py-2 rounded-md border-l-2"
+            style={{ 
+              borderLeftColor: activeColor,
+              borderTopColor: 'rgba(255,255,255,0.06)',
+              borderRightColor: 'rgba(255,255,255,0.06)',
+              borderBottomColor: 'rgba(255,255,255,0.06)',
+              borderStyle: 'solid',
+              borderWidth: '1px',
+              borderLeftWidth: '3px',
+              backdropFilter: 'blur(12px)',
+              boxShadow: hovered ? `0 8px 32px rgba(0,0,0,0.85), 0 0 12px ${activeColor}33` : '0 4px 10px rgba(0,0,0,0.5)'
+            }}
           >
             {name}
           </span>
@@ -197,35 +287,212 @@ const OrbitingLogo = ({ name, svgPath, speed, radius, yOffset, phase, isCyberThe
   );
 };
 
-// Abstract mutating 3D glass dodecahedron body
-const CentralObject = ({ isCyberTheme }) => {
+// Neural globe connecting wireframe grid
+const GlobeGrid = ({ isCyberTheme, exploded }) => {
   const meshRef = useRef();
-  const wireframeRef = useRef();
+  const explosionStartTime = useRef(null);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
     
-    // Slow rotational velocity
-    const rotX = time * 0.12;
-    const rotY = time * 0.16;
-    
+    // Slow rotational velocity matching logos
+    const rotSpeed = time * 0.08;
     if (meshRef.current) {
-      meshRef.current.rotation.x = rotX;
-      meshRef.current.rotation.y = rotY;
-    }
-    if (wireframeRef.current) {
-      wireframeRef.current.rotation.x = rotX;
-      wireframeRef.current.rotation.y = rotY;
+      meshRef.current.rotation.y = rotSpeed;
     }
 
-    // Breath-like mutating scale
-    const scale = 1.25 + Math.sin(time * 1.8) * 0.06;
-    if (meshRef.current) {
-      meshRef.current.scale.set(scale, scale, scale);
+    // 💥 BIG BANG IGNITION SCALE: Starts at scale 0, ignites at peak explosion (0.4s), snaps to 1.0!
+    let entranceScale = 1.0;
+    if (exploded) {
+      if (explosionStartTime.current === null) {
+        explosionStartTime.current = time;
+      }
+      const elapsed = time - explosionStartTime.current;
+      
+      if (elapsed < 2.0) {
+        if (elapsed < 0.4) {
+          entranceScale = 0; // completely invisible/imploded at start
+        } else {
+          const t = (elapsed - 0.4) / 1.6;
+          // Smooth spring scale ignition
+          entranceScale = Math.sin(t * Math.PI * 0.5) * 1.25 * (1 - t) + t * 1.0;
+        }
+      } else {
+        entranceScale = 1.0;
+      }
+    } else {
+      entranceScale = 0; // wait for click
     }
-    if (wireframeRef.current) {
-      // Keep wireframe slightly offset for glowing outline depth
-      wireframeRef.current.scale.set(scale * 1.015, scale * 1.015, scale * 1.015);
+
+    const baseScale = 1.0 + Math.sin(time * 0.85) * 0.015; // compound breathing
+    const finalScale = baseScale * entranceScale;
+    
+    if (meshRef.current) {
+      meshRef.current.scale.set(finalScale, finalScale, finalScale);
+    }
+  });
+
+  const activeColor = isCyberTheme ? '#39ff14' : '#ff5500';
+
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[1.5, 18, 18]} />
+      <meshBasicMaterial
+        color={activeColor}
+        wireframe
+        transparent
+        opacity={0.12}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+};
+
+// Generative point cloud quantum particle swarm (650+ layered stars) + Gravitational Sway
+const QuantumParticleSwarm = ({ isCyberTheme, exploded }) => {
+  const pointsRef = useRef();
+  const particleCount = 650;
+  const explosionStartTime = useRef(null);
+
+  // Compute points shell layout once
+  const [positions] = React.useMemo(() => {
+    const pos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = 1.25 + Math.random() * 0.5; // spherical layered shell
+
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = r * Math.cos(phi);
+    }
+    return [pos];
+  }, []);
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    const pointerX = state.pointer.x * 2.8;
+    const pointerY = state.pointer.y * 2.2;
+
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y = time * 0.04;
+      pointsRef.current.rotation.x = time * 0.025;
+
+      // 🌪️ Dynamic cursor gravitational wind sway
+      pointsRef.current.position.x += (pointerX * 0.18 - pointsRef.current.position.x) * 0.05;
+      pointsRef.current.position.y += (pointerY * 0.18 - pointsRef.current.position.y) * 0.05;
+      
+      const baseScale = 1.0 + Math.sin(time * 0.95) * 0.035;
+
+      // 💥 Sinematik BIG BANG EXPLOSION - Rushes completely off-screen, past camera view!
+      let entranceMultiplier = 0.01; // tight central pack
+      
+      if (exploded) {
+        if (explosionStartTime.current === null) {
+          explosionStartTime.current = time;
+        }
+        const elapsed = time - explosionStartTime.current;
+        
+        if (elapsed < 2.0) {
+          if (elapsed < 0.4) {
+            const tExp = elapsed / 0.4;
+            // Explosive burst to scale 22.0! Flies past camera coordinates
+            entranceMultiplier = 0.01 + 21.99 * Math.pow(tExp, 2);
+          } else {
+            const tRec = (elapsed - 0.4) / 1.6;
+            // Magnetic recall pulling back to globe shell
+            entranceMultiplier = 22.0 + (1.0 - 22.0) * Math.sin(tRec * Math.PI * 0.5);
+          }
+        } else {
+          entranceMultiplier = 1.0;
+        }
+      }
+
+      const finalScale = baseScale * entranceMultiplier;
+      pointsRef.current.scale.set(finalScale, finalScale, finalScale);
+    }
+  });
+
+  const activeColor = isCyberTheme ? '#39ff14' : '#ff5500';
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        color={activeColor}
+        size={0.045}
+        sizeAttenuation={true}
+        transparent={true}
+        opacity={0.65}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+};
+
+// Double-Nested Contrasting Core CPU Reactor (Dodecahedron & Glass Icosahedron)
+const CentralObject = ({ isCyberTheme, exploded }) => {
+  const outerRef = useRef();
+  const innerRef = useRef();
+  const explosionStartTime = useRef(null);
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    
+    const rotX = time * 0.12;
+    const rotY = time * 0.16;
+    const innerRotX = -time * 0.28;
+    const innerRotY = -time * 0.35;
+    
+    if (outerRef.current) {
+      outerRef.current.rotation.x = rotX;
+      outerRef.current.rotation.y = rotY;
+    }
+    if (innerRef.current) {
+      innerRef.current.rotation.x = innerRotX;
+      innerRef.current.rotation.y = innerRotY;
+    }
+
+    // 💥 BIG BANG IGNITION SCALE: Stays 0, bursts to life, snaps to 0.82!
+    let entranceScale = 1.0;
+    if (exploded) {
+      if (explosionStartTime.current === null) {
+        explosionStartTime.current = time;
+      }
+      const elapsed = time - explosionStartTime.current;
+      
+      if (elapsed < 2.0) {
+        if (elapsed < 0.4) {
+          entranceScale = 0;
+        } else {
+          const t = (elapsed - 0.4) / 1.6;
+          // Smooth bounce ignite
+          entranceScale = Math.sin(t * Math.PI * 0.5) * 1.25 * (1 - t) + t * 1.0;
+        }
+      } else {
+        entranceScale = 1.0;
+      }
+    } else {
+      entranceScale = 0; // wait
+    }
+
+    const baseScale = 0.82 + Math.sin(time * 1.8) * 0.04;
+    const finalScale = baseScale * entranceScale;
+
+    if (outerRef.current) {
+      outerRef.current.scale.set(finalScale, finalScale, finalScale);
+    }
+    if (innerRef.current) {
+      const innerScale = finalScale * 0.52;
+      innerRef.current.scale.set(innerScale, innerScale, innerScale);
     }
   });
 
@@ -233,28 +500,30 @@ const CentralObject = ({ isCyberTheme }) => {
 
   return (
     <group>
-      {/* 3D Dark Glass Dodecahedron Mesh */}
-      <mesh ref={meshRef}>
-        <dodecahedronGeometry args={[1, 1]} />
-        <meshPhysicalMaterial
-          color="#060606"
-          roughness={0.12}
-          metalness={0.9}
-          transmission={0.65}
-          thickness={1.4}
-          transparent
-          opacity={0.88}
-        />
-      </mesh>
-
-      {/* Wireframe Hologram Outline Mesh */}
-      <mesh ref={wireframeRef}>
+      {/* Outer Wireframe CPU Ring */}
+      <mesh ref={outerRef}>
         <dodecahedronGeometry args={[1, 1]} />
         <meshBasicMaterial
           color={activeColor}
           wireframe
           transparent
-          opacity={0.4}
+          opacity={0.35}
+        />
+      </mesh>
+
+      {/* Inner Crystalline Physical Glass Mutator */}
+      <mesh ref={innerRef}>
+        <icosahedronGeometry args={[1, 0]} />
+        <meshPhysicalMaterial
+          color="#060606"
+          emissive={activeColor}
+          emissiveIntensity={isCyberTheme ? 0.25 : 0.15}
+          roughness={0.08}
+          metalness={0.85}
+          transmission={0.95}
+          thickness={1.6}
+          transparent
+          opacity={0.92}
         />
       </mesh>
     </group>
@@ -266,43 +535,42 @@ const ParallaxGroup = ({ children }) => {
   const groupRef = useRef();
 
   useFrame((state) => {
-    // Parallax logic: rotate slightly based on cursor
     const targetX = -state.pointer.x * 0.28;
     const targetY = state.pointer.y * 0.28;
 
     if (groupRef.current) {
       groupRef.current.rotation.y += (targetX - groupRef.current.rotation.y) * 0.06;
       groupRef.current.rotation.x += (targetY - groupRef.current.rotation.x) * 0.06;
+
+      // 📱 Real-time mathematical responsiveness: scale down scene automatically on narrow/mobile viewports
+      const responsiveScale = Math.min(1.0, state.viewport.width / 5.2);
+      groupRef.current.scale.set(responsiveScale, responsiveScale, responsiveScale);
     }
   });
 
   return <group ref={groupRef}>{children}</group>;
 };
 
-// Main Scene Component
-// Main Scene Component
+// Main Export Component
 export default function Hero3D({ initialSkills }) {
   const [isCyberTheme, setIsCyberTheme] = useState(false);
+  const [exploded, setExploded] = useState(false);
 
-  // Sync color variables in real-time with theme classes
+  // Sync color variables with theme classes
   useEffect(() => {
     const checkTheme = () => {
       setIsCyberTheme(document.documentElement.classList.contains('theme-cyber'));
     };
-
     checkTheme();
-
     const observer = new MutationObserver(checkTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
     return () => observer.disconnect();
   }, []);
 
-  // Set up the hardware-accelerated CSS transition trigger on mounting
+  // Set up the dynamic hardware-accelerated mounting transition
   useEffect(() => {
     const parent = document.getElementById('hero-3d-hologram');
     if (parent) {
-      // Let the headline stagger start first, then smoothly fade-up scale the entire WebGL scene
       const timer = setTimeout(() => {
         parent.classList.add('visible');
       }, 30);
@@ -310,7 +578,83 @@ export default function Hero3D({ initialSkills }) {
     }
   }, []);
 
-  // Set up the default skills array (fallback if database has no custom skills chosen)
+  // 💥 Ignite Big Bang Explosion precisely on curtain opening OR on direct load!
+  useEffect(() => {
+    const isIntroActive = typeof window !== 'undefined' && 
+                          typeof document !== 'undefined' && 
+                          !!document.getElementById('intro-overlay') && 
+                          !sessionStorage.getItem('pm_intro_seen');
+
+    if (isIntroActive) {
+      const handleDismiss = () => {
+        setTimeout(() => {
+          setExploded(true);
+          // 🔊 Play elegant cosmic Big Bang explosion sound!
+          if (window.FluxoraAudio && typeof window.FluxoraAudio.playCosmicExplosion === 'function') {
+            window.FluxoraAudio.playCosmicExplosion();
+          }
+          // 🔊 Play elegant cosmic contraction/recall sound exactly at explosion peak (400ms)
+          setTimeout(() => {
+            if (window.FluxoraAudio && typeof window.FluxoraAudio.playCosmicRecall === 'function') {
+              window.FluxoraAudio.playCosmicRecall();
+            }
+          }, 400);
+        }, 500); // 500ms delay matches the curtains parting peak perfectly!
+      };
+      window.addEventListener('intro-dismissed', handleDismiss);
+      return () => window.removeEventListener('intro-dismissed', handleDismiss);
+    } else {
+      // Intro overlay is already seen. Trigger on FIRST user interaction (mousemove, scroll, click, touch)
+      // to bypass browser autoplay blocks and ensure the explosion sound plays 100% reliably!
+      let triggered = false;
+      const triggerExplosion = () => {
+        if (triggered) return;
+        triggered = true;
+
+        window.removeEventListener('mousemove', triggerExplosion);
+        window.removeEventListener('scroll', triggerExplosion);
+        window.removeEventListener('click', triggerExplosion);
+        window.removeEventListener('touchstart', triggerExplosion);
+
+        // Resume AudioContext in case it's suspended
+        if (window.FluxoraAudio && window.FluxoraAudio.ctx && window.FluxoraAudio.ctx.state === 'suspended') {
+          window.FluxoraAudio.ctx.resume();
+        }
+
+        setTimeout(() => {
+          setExploded(true);
+          // 🔊 Play elegant cosmic Big Bang explosion sound!
+          if (window.FluxoraAudio && typeof window.FluxoraAudio.playCosmicExplosion === 'function') {
+            window.FluxoraAudio.playCosmicExplosion();
+          }
+          // 🔊 Play elegant cosmic contraction/recall sound exactly at explosion peak (400ms)
+          setTimeout(() => {
+            if (window.FluxoraAudio && typeof window.FluxoraAudio.playCosmicRecall === 'function') {
+              window.FluxoraAudio.playCosmicRecall();
+            }
+          }, 400);
+        }, 50); // slight 50ms buffer for tactile reaction smoothness
+      };
+
+      window.addEventListener('mousemove', triggerExplosion, { passive: true });
+      window.addEventListener('scroll', triggerExplosion, { passive: true });
+      window.addEventListener('click', triggerExplosion, { passive: true });
+      window.addEventListener('touchstart', triggerExplosion, { passive: true });
+
+      // Fallback: trigger after 2.2s anyway if the user is completely idle
+      const fallbackTimer = setTimeout(triggerExplosion, 2200);
+
+      return () => {
+        window.removeEventListener('mousemove', triggerExplosion);
+        window.removeEventListener('scroll', triggerExplosion);
+        window.removeEventListener('click', triggerExplosion);
+        window.removeEventListener('touchstart', triggerExplosion);
+        clearTimeout(fallbackTimer);
+      };
+    }
+  }, []);
+
+  // Default skills (fallback if database has none selected)
   const defaultSkills = [
     { name: 'React', radius: 2.2, yOffset: 0.3 },
     { name: 'Laravel', radius: 2.0, yOffset: -0.2 },
@@ -322,18 +666,12 @@ export default function Hero3D({ initialSkills }) {
     { name: 'Figma', radius: 2.1, yOffset: 0.5 },
   ];
 
-  // Map initialSkills from Laravel database, fallback to defaults if none selected/provided
   const rawSkills = (initialSkills && initialSkills.length > 0) ? initialSkills : defaultSkills;
   
-  // Format the skills array with correct SVGs and dynamically calculated radii/offsets
   const techLogos = rawSkills.map((skill, index) => {
     const normalizedName = skill.name.toLowerCase().replace(/[^a-z0-9]/g, '');
     const svgPath = svgRegistry[normalizedName] || fallbackSvg;
-    
-    // Dynamically alternate radii between 2.0 and 2.3 to give a nice depth
     const radius = skill.radius || (2.0 + (index % 4) * 0.1);
-    
-    // Dynamically stagger the vertical height to prevent flat collisions
     const yOffset = skill.yOffset !== undefined ? skill.yOffset : ((index % 2 === 0 ? 0.25 : -0.3) + (index % 3) * 0.08);
 
     return {
@@ -346,7 +684,6 @@ export default function Hero3D({ initialSkills }) {
 
   return (
     <div className="w-full h-full relative flex items-center justify-center">
-      {/* High-Performance Canvas */}
       <Canvas
         camera={{ position: [0, 0, 5.2], fov: 60 }}
         style={{
@@ -356,6 +693,7 @@ export default function Hero3D({ initialSkills }) {
           top: 0,
           left: 0,
           pointerEvents: 'auto',
+          overflow: 'visible', /* BORDERLESS EXPLOSION! */
         }}
         gl={{ antialias: true, alpha: true }}
       >
@@ -364,29 +702,26 @@ export default function Hero3D({ initialSkills }) {
         <pointLight position={[-10, -10, -10]} intensity={0.8} />
 
         <ParallaxGroup>
-          {/* Central 3D Dark Glass Mutant */}
-          <CentralObject isCyberTheme={isCyberTheme} />
+          {/* Central nested crystalline core reaktor CPU */}
+          <CentralObject isCyberTheme={isCyberTheme} exploded={exploded} />
 
-          {/* Hologram Floating Constellation Logos */}
-          {techLogos.map((logo, index) => {
-            // Dynamically calculate phase to spread N logos perfectly 360 degrees apart
-            const calculatedPhase = (index * 2 * Math.PI) / techLogos.length;
-            // Uniform orbit speed so they maintain their relative spacing perfectly over time
-            const baseSpeed = 0.28;
+          {/* Neural globe network connecting grid */}
+          <GlobeGrid isCyberTheme={isCyberTheme} exploded={exploded} />
 
-            return (
-              <OrbitingLogo
-                key={logo.name}
-                name={logo.name}
-                svgPath={logo.svgPath}
-                speed={baseSpeed}
-                radius={logo.radius}
-                yOffset={logo.yOffset}
-                phase={calculatedPhase}
-                isCyberTheme={isCyberTheme}
-              />
-            );
-          })}
+          {/* Particle cloud quantum stars swarm (responds to mouse gravity wind) */}
+          <QuantumParticleSwarm isCyberTheme={isCyberTheme} exploded={exploded} />
+
+          {/* Tilted spherical constellation keahlian nodes */}
+          {techLogos.map((logo, index) => (
+            <ConstellationNode
+              key={logo.name}
+              name={logo.name}
+              skillIndex={index}
+              totalSkills={techLogos.length}
+              exploded={exploded}
+              isCyberTheme={isCyberTheme}
+            />
+          ))}
         </ParallaxGroup>
       </Canvas>
     </div>
