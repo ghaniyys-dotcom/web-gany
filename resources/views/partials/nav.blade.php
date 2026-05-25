@@ -62,4 +62,10 @@
 <a href="{{ route('home') }}#faq">FAQ</a>
 <a href="{{ route('home') }}#contact">Contact</a>
 @endif
+<div class="mobile-menu-divider"></div>
+<button type="button" class="mobile-cmd-btn" id="mobileCmdBtn" onclick="openCommandCenter()">
+  <span class="cmd-icon">⌘</span>
+  <span class="cmd-label">Command Center</span>
+  <span class="cmd-hint">Tap to open</span>
+</button>
 </div>

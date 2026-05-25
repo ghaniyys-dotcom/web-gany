@@ -331,5 +331,22 @@
     box.classList.toggle('open', !isOpen);
     row.classList.toggle('open', !isOpen);
   };
+
+  // Mobile Command Center trigger (same as Cmd+K)
+  window.openCommandCenter = function() {
+    const cc = document.getElementById('pm-command-center');
+    if (cc) {
+      cc.classList.add('open');
+      cc.setAttribute('aria-hidden', 'false');
+      const input = document.getElementById('ccInput');
+      if (input) setTimeout(() => input.focus(), 100);
+    }
+    // Also close mobile menu if open
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+      mobileMenu.classList.remove('open');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+  };
 </script>
 <script src="{{ asset('js/site-scripts.js') }}" defer></script>
