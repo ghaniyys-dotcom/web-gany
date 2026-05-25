@@ -68,7 +68,7 @@
         @if($founder->photo_path)
           <div style="margin-top:10px">
             <span class="muted" style="display:block;font-size:12px;margin-bottom:6px">Foto Saat Ini:</span>
-            <img src="{{ asset('storage/' . $founder->photo_path) }}" alt="Portrait" style="max-height:150px;border-radius:8px;border:1px solid var(--line);filter:grayscale(0.5)">
+            <img src="{{ asset($founder->photo_path) }}" alt="Portrait" style="max-height:150px;border-radius:8px;border:1px solid var(--line);filter:grayscale(0.5)">
           </div>
         @else
           <div style="padding:15px;background:#091020;border:1px dashed var(--line);border-radius:12px;font-size:12px" class="muted">
@@ -86,7 +86,7 @@
           <div style="margin-top:10px">
             <span class="muted" style="display:block;font-size:12px;margin-bottom:6px">Tanda Tangan Saat Ini:</span>
             <div style="background:#091020;padding:12px;border-radius:8px;border:1px solid var(--line);display:inline-block">
-              <img src="{{ asset('storage/' . $founder->signature_path) }}" alt="Signature" style="max-height:60px">
+              <img src="{{ asset($founder->signature_path) }}" alt="Signature" style="max-height:60px">
             </div>
           </div>
         @else
