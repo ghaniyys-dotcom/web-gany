@@ -124,14 +124,20 @@ class SiteSetting extends Model
     public static function defaults(): array
     {
         return [
-            'brand_name' => 'Asteria Labs',
+            'brand_name' => 'Gany Labs',
+            'logo_initials' => 'GL',
             'tagline' => 'Strategy-led digital studio for ambitious brands',
-            'hero_title' => 'We build company presence that feels premium, fast, and trusted.',
-            'hero_subtitle' => 'Asteria Labs adalah partner digital untuk brand modern: company profile, web experience, product interface, dan growth system yang dibuat rapi dari strategi sampai launch.',
-            'primary_cta' => 'Bangun Website Sekarang',
-            'secondary_cta' => 'Lihat Showcase',
-            'email' => 'hello@asterialabs.id',
-            'whatsapp' => '6281234567890',
+            'tagline_en' => 'Strategy-led digital studio for ambitious brands',
+            'hero_title' => 'Turning Code Into Reality.           *Concept* to *Deployment*',
+            'hero_title_en' => 'Turning Code Into Reality.           *Concept* to *Deployment*',
+            'hero_subtitle' => 'A good website is an investment that pays off. Leave the technical complexity to Gany Labs. From premium visuals to robust systems, we are ready to design a professional website that is functional and brings real results for you.',
+            'hero_subtitle_en' => 'A good website is an investment that pays off. Leave the technical complexity to Gany Labs. From premium visuals to robust systems, we are ready to design a professional website that is functional and brings real results for you.',
+            'primary_cta' => 'Build a Website Now',
+            'primary_cta_en' => 'Build a Website Now',
+            'secondary_cta' => 'View Showcase',
+            'secondary_cta_en' => 'View Showcase',
+            'email' => 'ghaniyys@gmail.com',
+            'whatsapp' => '6289670949392',
             'estimator_enabled' => false,
             'newsletter_title' => 'Dapatkan Penawaran Khusus',
             'newsletter_title_en' => 'Get Special Offers',
@@ -164,16 +170,26 @@ class SiteSetting extends Model
             ],
             'stats' => [
                 ['value' => '42+', 'label' => 'projects shipped'],
-                ['value' => '3.8x', 'label' => 'avg. inquiry lift'],
-                ['value' => '14d', 'label' => 'prototype sprint']
+                ['value' => '3.8x', 'label' => 'avg. inquiry elevator'],
+                ['value' => '14d', 'label' => 'sprint prototype']
+            ],
+            'stats_en' => [
+                ['value' => '42+', 'label' => 'projects shipped'],
+                ['value' => '3.8x', 'label' => 'avg. inquiry elevator'],
+                ['value' => '14d', 'label' => 'sprint prototype']
             ],
             'services' => [
-                ['icon' => '✦', 'title' => 'Brand Strategy', 'body' => 'Positioning, messaging, tone of voice, dan narasi brand biar pengunjung langsung ngerti kenapa harus pilih lu.'],
-                ['icon' => '◈', 'title' => 'Website Experience', 'body' => 'Landing, company profile, services page, portfolio, contact flow, dan responsive UI dengan visual premium.'],
-                ['icon' => '↗', 'title' => 'Growth Funnel', 'body' => 'CTA architecture, lead capture, WhatsApp/contact integration, analytics-ready structure, dan speed optimization.']
+                ['icon' => '✦', 'title' => 'Immersive Interface Design', 'body' => 'Presents an exclusive and interactive visual experience. The interface is designed from scratch without templates to ensure your digital identity appears unique, modern and leaves a lasting impression on visitors.'],
+                ['icon' => '◈', 'title' => 'Custom Web Development', 'body' => 'Building a digital ecosystem with a robust system architecture. Specifically designed for high scalability, providing data security, and ease of managing your business operations.'],
+                ['icon' => '↗', 'title' => 'Optimization & High Performance', 'body' => 'Aesthetics balanced with efficiency. We ensure every page is optimized for maximum loading speed, responsive across all devices, and search engine (SEO) friendly.']
+            ],
+            'services_en' => [
+                ['icon' => '✦', 'title' => 'Immersive Interface Design', 'body' => 'Presents an exclusive and interactive visual experience. The interface is designed from scratch without templates to ensure your digital identity appears unique, modern and leaves a lasting impression on visitors.'],
+                ['icon' => '◈', 'title' => 'Custom Web Development', 'body' => 'Building a digital ecosystem with a robust system architecture. Specifically designed for high scalability, providing data security, and ease of managing your business operations.'],
+                ['icon' => '↗', 'title' => 'Optimization & High Performance', 'body' => 'Aesthetics balanced with efficiency. We ensure every page is optimized for maximum loading speed, responsive across all devices, and search engine (SEO) friendly.']
             ],
             'works' => [
-                ['tag' => 'Corporate Website', 'title' => 'Nebula Capital', 'body' => 'Investor-grade web profile dengan data storytelling, credibility blocks, dan high-trust contact journey.'],
+                ['tag' => 'Corporate Websites', 'title' => 'Nebula Capital', 'body' => 'Investor-grade web profile dengan data storytelling, credibility blocks, dan high-trust contact journey.'],
                 ['tag' => 'Product Launch', 'title' => 'OrbitOS', 'body' => 'Launch page SaaS dengan dashboard preview dan pricing-ready layout.'],
                 ['tag' => 'Brand Refresh', 'title' => 'Velora Studio', 'body' => 'Portfolio architecture untuk creative studio biar case study lebih menjual.']
             ],
@@ -181,26 +197,26 @@ class SiteSetting extends Model
                 [
                     'icon' => 'Discover',
                     'title' => 'Discover',
-                    'metric' => 'Taktik, Riset, & Rencana',
-                    'body' => 'Mapping tujuan, audience, dan konten penting agar strategi digital terarah dan menghasilkan dampak bisnis nyata.'
+                    'metric' => 'Tactics, Research, & Plan',
+                    'body' => 'Mapping goals, audience, and essential content to ensure a structured digital strategy that delivers real business impact.'
                 ],
                 [
                     'icon' => 'Design',
                     'title' => 'Design',
-                    'metric' => 'UI/UX & Estetika High-End',
-                    'body' => 'Visual premium, asimetris, grid-breaking, mobile-first. Kami merancang identitas visual modern unik yang memikat pengunjung sejak pandangan pertama.'
+                    'metric' => 'UI/UX & High-End Aesthetics',
+                    'body' => 'Premium, asymmetric, grid-breaking, and mobile-first visuals. We design a unique modern visual identity that captivates visitors at first sight.'
                 ],
                 [
                     'icon' => 'Build',
                     'title' => 'Build',
                     'metric' => 'Clean Code & 3D Hologram',
-                    'body' => 'Laravel, MySQL, React, Three.js. Kami memodernisasi kode program menjadi modular, berkecepatan instan, responsif, dan mudah dikelola melalui CMS Admin Panel khusus.'
+                    'body' => 'Laravel, MySQL, React, Three.js. We modernize codebases into modular, instant-speed, responsive systems easily managed via a custom CMS Admin Panel.'
                 ],
                 [
                     'icon' => 'Launch',
                     'title' => 'Launch',
                     'metric' => 'Zero-Downtime VPS Deploy',
-                    'body' => 'Pengujian fungsionalitas ketat, optimasi SEO instan, konfigurasi domain, penyebaran ke VPS berkinerja tinggi, dan serah terima data administratif.'
+                    'body' => 'Rigorous functionality testing, instant SEO optimization, domain configuration, high-performance VPS deployment, and administrative hand-off.'
                 ]
             ],
             'process_steps_en' => [

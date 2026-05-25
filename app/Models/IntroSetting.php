@@ -61,12 +61,12 @@ class IntroSetting extends Model
     {
         return [
             'is_enabled'           => true,
-            'greeting'             => 'Halo 👋',
-            'greeting_en'          => 'Hello 👋',
-            'name'                 => 'Gua adalah Gany',
+            'greeting'             => 'welcome',
+            'greeting_en'          => 'welcome',
+            'name'                 => "Gany's Portofolio",
             'roles'                => ['Full-Stack Developer', 'UI/UX Enthusiast', 'Laravel Engineer', 'Software Engineer'],
-            'tagline'              => 'Gua bikin software yang beautiful dan functional.',
-            'tagline_en'           => 'I build beautiful and functional software.',
+            'tagline'              => 'Build premium and functional digital products.',
+            'tagline_en'           => 'Build premium and functional digital products.',
             'cta_text'             => 'Lihat Karya Gua →',
             'cta_text_en'          => 'View My Work →',
             'availability_enabled' => true,
