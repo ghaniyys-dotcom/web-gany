@@ -334,12 +334,8 @@
 
   // Mobile Command Center trigger (same as Cmd+K)
   window.openCommandCenter = function() {
-    const cc = document.getElementById('pm-command-center');
-    if (cc) {
-      cc.classList.add('open');
-      cc.setAttribute('aria-hidden', 'false');
-      const input = document.getElementById('ccInput');
-      if (input) setTimeout(() => input.focus(), 100);
+    if (window.openCC) {
+      window.openCC();
     }
     // Also close mobile menu if open
     const mobileMenu = document.getElementById('mobileMenu');

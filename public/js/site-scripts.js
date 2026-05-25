@@ -1279,6 +1279,7 @@ if (ccContainer) {
 
   const openCC = () => {
     ccContainer.style.display = 'flex';
+    ccContainer.setAttribute('aria-hidden', 'false');
     requestAnimationFrame(() => {
       ccContainer.classList.add('open');
       ccInput.value = '';
@@ -1290,11 +1291,16 @@ if (ccContainer) {
 
   const closeCC = () => {
     ccContainer.classList.remove('open');
+    ccContainer.setAttribute('aria-hidden', 'true');
     if (window.FluxoraAudio) window.FluxoraAudio.playTactileClick();
     setTimeout(() => {
       ccContainer.style.display = 'none';
     }, 400);
   };
+
+  // Expose to window for mobile trigger
+  window.openCC = openCC;
+  window.closeCC = closeCC;
 
   window.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
