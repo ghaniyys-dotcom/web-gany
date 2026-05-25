@@ -654,16 +654,23 @@ export default function Hero3D({ initialSkills }) {
     }
   }, []);
 
-  // Default skills (fallback if database has none selected)
+  // Default skills (fallback if database has none selected) — 15 skills matching DB
   const defaultSkills = [
-    { name: 'React', radius: 2.2, yOffset: 0.3 },
-    { name: 'Laravel', radius: 2.0, yOffset: -0.2 },
-    { name: 'Tailwind', radius: 2.3, yOffset: -0.4 },
-    { name: 'Three.js', radius: 2.1, yOffset: 0.4 },
-    { name: 'PHP', radius: 2.2, yOffset: 0.2 },
-    { name: 'MySQL', radius: 2.0, yOffset: -0.3 },
-    { name: 'JS', radius: 2.3, yOffset: -0.5 },
-    { name: 'Figma', radius: 2.1, yOffset: 0.5 },
+    { name: 'Laravel',       radius: 2.0, yOffset: -0.2 },
+    { name: 'PHP',           radius: 2.2, yOffset:  0.2 },
+    { name: 'Vue.js',        radius: 2.1, yOffset:  0.3 },
+    { name: 'JavaScript',    radius: 2.3, yOffset: -0.3 },
+    { name: 'MySQL',         radius: 2.0, yOffset:  0.4 },
+    { name: 'PostgreSQL',    radius: 2.1, yOffset: -0.4 },
+    { name: 'REST APIs',     radius: 2.2, yOffset:  0.1 },
+    { name: 'Docker',        radius: 2.0, yOffset: -0.1 },
+    { name: 'CSS / Tailwind',radius: 2.3, yOffset:  0.5 },
+    { name: 'Git',           radius: 2.1, yOffset: -0.5 },
+    { name: 'UI / UX',       radius: 2.0, yOffset:  0.25 },
+    { name: 'Livewire',      radius: 2.2, yOffset: -0.25 },
+    { name: 'React',         radius: 2.1, yOffset:  0.35 },
+    { name: 'Three.js',      radius: 2.3, yOffset: -0.35 },
+    { name: 'Figma',         radius: 2.0, yOffset:  0.45 },
   ];
 
   const rawSkills = (initialSkills && initialSkills.length > 0) ? initialSkills : defaultSkills;

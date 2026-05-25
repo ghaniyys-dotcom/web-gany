@@ -12,9 +12,19 @@ function loadAudioEngine() {
 
 function loadLenis() {
   if (typeof window.Lenis === 'undefined') {
-    setTimeout(loadLenis, 50);
+    // Retry up to 50 times (2.5 seconds) before giving up
+    if (!window._lenisRetryCount) window._lenisRetryCount = 0;
+    window._lenisRetryCount++;
+    if (window._lenisRetryCount < 50) {
+      setTimeout(loadLenis, 50);
+    } else {
+      console.warn('Lenis smooth scroll failed to load after 50 retries');
+    }
     return;
   }
+  
+  // Reset retry count on success
+  window._lenisRetryCount = 0;
   
   if (window.lenis) return;
 
