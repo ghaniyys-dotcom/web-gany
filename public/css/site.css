@@ -3061,7 +3061,6 @@ html.lenis {
   }
 }
 
-/* Bento Hover States */
 .bento-overlay-details {
   position: absolute;
   inset: 0;
@@ -3069,8 +3068,9 @@ html.lenis {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 30px;
+  padding: 24px !important;
   z-index: 5;
+  overflow: hidden !important;
 }
 .bento-card-media {
   position: absolute;
@@ -3097,25 +3097,34 @@ html.lenis {
 
 /* Project Tag & Title */
 .bento-card-tag {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #39ff14;
-  margin-bottom: 8px;
-  display: inline-block;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  color: #39ff14 !important;
+  margin-bottom: 6px !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
 .theme-amber .bento-card-tag {
-  color: #ff6a1a;
+  color: #ff6a1a !important;
 }
 .bento-card-title {
-  font-size: clamp(18px, 2vw, 24px) !important;
+  font-size: clamp(16px, 1.8vw, 22px) !important;
   font-weight: 800 !important;
   color: #fff !important;
   letter-spacing: -0.02em !important;
-  margin: 0 0 6px 0 !important;
+  margin: 0 0 8px 0 !important;
   font-family: 'Space Grotesk', sans-serif;
-  line-height: 1.2 !important;
+  line-height: 1.25 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
 .bento-card-desc {
   font-size: 13px !important;
@@ -3124,8 +3133,8 @@ html.lenis {
   margin: 0 !important;
   line-height: 1.5 !important;
   display: -webkit-box !important;
-  -webkit-line-clamp: 3 !important;
-  line-clamp: 3 !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
 }
