@@ -756,16 +756,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const worksFields = [
         { name: 'tag', label: 'Tag', type: 'text', placeholder: 'e.g. Product Launch', width: 'span 1' },
         { name: 'title', label: 'Project Title', type: 'text', placeholder: 'e.g. OrbitOS', width: 'span 1' },
-        { name: 'client', label: 'Client (opsional)', type: 'text', placeholder: 'e.g. Nebula Capital', width: 'span 1' },
+        { name: 'body', label: 'Brief Description', type: 'textarea', placeholder: 'Launch page SaaS dengan...', width: 'span 3' },
         { name: 'image_url', label: 'Image URL (opsional)', type: 'text', placeholder: 'e.g. images/mockup_orbit.png', width: 'span 1.5' },
         { name: 'project_url', label: 'Project URL (opsional)', type: 'text', placeholder: 'e.g. https://orbitos.demo', width: 'span 1.5' },
-        { name: 'body', label: 'Brief Description', type: 'textarea', placeholder: 'Launch page SaaS dengan...', width: 'span 3' },
+        { name: 'client', label: 'Client (opsional)', type: 'text', placeholder: 'e.g. Nebula Capital', width: 'span 1' },
         { name: 'challenge', label: 'Challenge (opsional)', type: 'textarea', placeholder: 'Tantangan kami adalah...', width: 'span 1.5' },
         { name: 'solution', label: 'Solution (opsional)', type: 'textarea', placeholder: 'Solusi kami adalah...', width: 'span 1.5' },
         { name: 'tech_stack', label: 'Tech Stack (opsional)', type: 'text', placeholder: 'e.g. Laravel, React, Three.js', width: 'span 1.5' },
         { name: 'results', label: 'Results (opsional)', type: 'text', placeholder: 'e.g. Target konversi terlampaui...', width: 'span 1.5' }
     ];
-    const worksDefault = { tag: '', title: '', client: '', image_url: '', project_url: '', body: '', challenge: '', solution: '', tech_stack: '', results: '' };
+    const worksDefault = { tag: '', title: '', body: '', image_url: '', project_url: '', client: '', challenge: '', solution: '', tech_stack: '', results: '' };
     new InteractiveListBuilder('works_lines', worksFields, worksDefault);
     new InteractiveListBuilder('works_lines_en', worksFields, worksDefault);
 });
