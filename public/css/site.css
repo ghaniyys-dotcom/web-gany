@@ -1886,7 +1886,10 @@ main {
 }
 
 #about-content-mount {
-  display: contents;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
 }
 
 .founder-content {

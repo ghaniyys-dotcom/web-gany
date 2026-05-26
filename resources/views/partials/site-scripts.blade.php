@@ -312,9 +312,23 @@
         });
         let d = 'M 40,0';
         if (svgY.length > 0) {
-          d += ` Q 15,${svgY[0] / 2} 40,${svgY[0]}`;
+          // Segment 0: from (40, 0) to (40, svgY[0])
+          let dy = svgY[0];
+          d += ` C 20,${dy * 0.25} 20,${dy * 0.75} 40,${svgY[0]}`;
+          
+          // Subsequent segments: alternating winding left & right
           for (let i = 1; i < svgY.length; i++) {
-            d += ` T 40,${svgY[i]}`;
+            let yPrev = svgY[i - 1];
+            let yCurr = svgY[i];
+            let segmentDy = yCurr - yPrev;
+            
+            if (i % 2 === 1) {
+              // Wind to the right (x=60)
+              d += ` C 60,${yPrev + segmentDy * 0.25} 60,${yPrev + segmentDy * 0.75} 40,${yCurr}`;
+            } else {
+              // Wind to the left (x=20)
+              d += ` C 20,${yPrev + segmentDy * 0.25} 20,${yPrev + segmentDy * 0.75} 40,${yCurr}`;
+            }
           }
         }
         d += ' L 40,1000';
