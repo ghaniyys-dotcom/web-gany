@@ -228,6 +228,12 @@
         pill.addEventListener('click', function() {
           filterPills.forEach(p => p.classList.remove('active'));
           this.classList.add('active');
+          
+          // Play acoustic feedback on category filtering
+          if (window.FluxoraAudio && typeof window.FluxoraAudio.playTactileClick === 'function') {
+            window.FluxoraAudio.playTactileClick();
+          }
+          
           const filterVal = this.getAttribute('data-filter');
           bentoCards.forEach(card => {
             const cardCat = card.getAttribute('data-category');
@@ -260,8 +266,14 @@
         if (tiltEnabled) { tiltX = -(y / (rect.height / 2)) * 12; tiltY = (x / (rect.width / 2)) * 12; }
         card.style.transform = `translate3d(${pullX}px, ${pullY}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
         card.style.transition = 'none';
-        const pctX = ((e.clientX - rect.left) / rect.width) * 100;
-        const pctY = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        const localX = e.clientX - rect.left;
+        const localY = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${localX}px`);
+        card.style.setProperty('--mouse-y', `${localY}px`);
+        
+        const pctX = (localX / rect.width) * 100;
+        const pctY = (localY / rect.height) * 100;
         card.style.setProperty('--sheen-x', `${pctX}%`);
         card.style.setProperty('--sheen-y', `${pctY}%`);
         card.style.setProperty('--sheen-opacity', '1');
@@ -344,6 +356,35 @@
       mobileMenu.setAttribute('aria-hidden', 'true');
     }
   };
+
+  // sliding magnetic dock navigator
+  document.addEventListener('DOMContentLoaded', function() {
+    const linksContainer = document.querySelector('.hud-nav .links');
+    if (linksContainer) {
+      const activeBg = document.createElement('div');
+      activeBg.className = 'nav-hover-pill';
+      linksContainer.appendChild(activeBg);
+      
+      const links = linksContainer.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+          const rect = link.getBoundingClientRect();
+          const parentRect = linksContainer.getBoundingClientRect();
+          activeBg.style.left = `${rect.left - parentRect.left}px`;
+          activeBg.style.width = `${rect.width}px`;
+          activeBg.style.opacity = '1';
+          
+          // Play micro hover tick feedback sound
+          if (window.FluxoraAudio && typeof window.FluxoraAudio.playHoverShimmer === 'function') {
+            window.FluxoraAudio.playHoverShimmer();
+          }
+        });
+      });
+      linksContainer.addEventListener('mouseleave', function() {
+        activeBg.style.opacity = '0';
+      });
+    }
+  });
 </script>
 <script src="{{ asset('js/audio-engine.js') }}"></script>
 <script src="{{ asset('js/site-scripts.js') }}" defer></script>

@@ -652,9 +652,12 @@ if(canvas&&skillData&&skillData.length){
             ctx.beginPath();
             ctx.strokeStyle = hexToRgba(ni.color, opacity);
             ctx.lineWidth = ni.hovered || nj.hovered ? 1.6 : 0.95;
+            ctx.setLineDash([6, 14]);
+            ctx.lineDashOffset = -t * 1.5;
             ctx.moveTo(ni.x, ni.y);
             ctx.lineTo(nj.x, nj.y);
             ctx.stroke();
+            ctx.setLineDash([]);
 
             // Pulsating energy spark flowing on the cluster wire
             const sparkPos = (t * 0.35 + (i * 7.1 + j * 3.9)) % 1.0;
@@ -676,9 +679,12 @@ if(canvas&&skillData&&skillData.length){
             ctx.beginPath();
             ctx.strokeStyle = `rgba(255, 106, 26, ${opacity})`;
             ctx.lineWidth = 0.55;
+            ctx.setLineDash([4, 12]);
+            ctx.lineDashOffset = -t * 1.0;
             ctx.moveTo(ni.x, ni.y);
             ctx.lineTo(nj.x, nj.y);
             ctx.stroke();
+            ctx.setLineDash([]);
           }
         }
       }
@@ -1392,6 +1398,11 @@ if (ccContainer) {
 
   const executeCommand = (cmd) => {
     closeCC();
+    
+    // Play sweep acoustic feedback on command execution
+    if (window.FluxoraAudio && typeof window.FluxoraAudio.playCosmicRecall === 'function') {
+      window.FluxoraAudio.playCosmicRecall();
+    }
     
     setTimeout(() => {
       switch (cmd) {

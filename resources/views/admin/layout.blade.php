@@ -76,6 +76,7 @@ a {
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, #fff 30%, var(--pri) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 35px;
   display: flex;
@@ -498,7 +499,7 @@ details[open] summary {
 </nav>
 </aside>
 <main class="main">
-<h1 style="margin:0 0 6px; font-size:32px; font-weight:800; background:linear-gradient(to right, #fff, var(--muted)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">@yield('heading', 'Dashboard')</h1>
+<h1 style="margin:0 0 6px; font-size:32px; font-weight:800; background:linear-gradient(to right, #fff, var(--muted)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">@yield('heading', 'Dashboard')</h1>
 <p class="muted" style="margin:0 0 30px; font-size:14px; font-weight:500;">Kelola company profile langsung dari browser.</p>
 @if(session('success'))<div class="alert success"><span>✓</span> {{ session('success') }}</div>@endif
 @if(session('error'))<div class="alert error"><span>✕</span> {{ session('error') }}</div>@endif
@@ -541,8 +542,10 @@ window.translateField = function(sourceId, targetId, btn) {
 
         Promise.all(translatedLinesPromises)
             .then(translatedLines => {
-                document.getElementById(targetId).value = translatedLines.join('\n');
+                const targetEl = document.getElementById(targetId);
+                targetEl.value = translatedLines.join('\n');
                 flashTarget(targetId);
+                targetEl.dispatchEvent(new Event('change'));
             })
             .catch(err => {
                 console.error(err);
@@ -560,8 +563,10 @@ window.translateField = function(sourceId, targetId, btn) {
             .then(data => {
                 if (data && data[0]) {
                     const translation = data[0].map(x => x[0]).join('');
-                    document.getElementById(targetId).value = translation;
+                    const targetEl = document.getElementById(targetId);
+                    targetEl.value = translation;
                     flashTarget(targetId);
+                    targetEl.dispatchEvent(new Event('change'));
                 }
             })
             .catch(err => {

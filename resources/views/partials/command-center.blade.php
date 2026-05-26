@@ -13,6 +13,7 @@
     <div class="cc-input-wrapper">
       <span class="cc-prompt">❯</span>
       <input type="text" id="ccInput" placeholder="Ketik command... (contoh: /glow, /embers, /contact)" autocomplete="off" spellcheck="false">
+      <span class="cc-glow-dot"></span>
     </div>
     <div class="cc-body">
       <div class="cc-section-title">COMMANDS TERSEDIA</div>
@@ -104,6 +105,33 @@
   max-height: 90vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+/* CRT retro HUD monitor scanlines overlay */
+.cc-modal::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 106, 26, 0.04), rgba(57, 255, 20, 0.01), rgba(255, 106, 26, 0.04));
+  z-index: 20;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.35;
+  border-radius: inherit;
+}
+.cc-glow-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #15be83;
+  box-shadow: 0 0 10px #15be83;
+  margin-left: 10px;
+  flex-shrink: 0;
+  animation: ccBlink 1.2s infinite alternate;
+}
+@keyframes ccBlink {
+  0% { opacity: 0.25; }
+  100% { opacity: 1; }
 }
 .cc-glow-orb {
   position: absolute;

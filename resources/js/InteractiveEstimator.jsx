@@ -68,11 +68,17 @@ export default function InteractiveEstimator({ pricing }) {
   const handleFeatureToggle = (key) => {
     setFeatures(prev => ({ ...prev, [key]: !prev[key] }));
     setApplied(false);
+    if (window.FluxoraAudio && typeof window.FluxoraAudio.playTactileClick === 'function') {
+      window.FluxoraAudio.playTactileClick();
+    }
   };
 
   const handleTypeSelect = (type) => {
     setCalcType(type);
     setApplied(false);
+    if (window.FluxoraAudio && typeof window.FluxoraAudio.playHoverShimmer === 'function') {
+      window.FluxoraAudio.playHoverShimmer();
+    }
   };
 
   const formatIDR = (num) => {
@@ -145,9 +151,9 @@ export default function InteractiveEstimator({ pricing }) {
       formMessageArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
       formMessageArea.focus();
       
-      // Trigger global audio hover tick if available
-      if (window._audioEngine && typeof window._audioEngine.playHoverTick === 'function') {
-        window._audioEngine.playHoverTick();
+      // Trigger dynamic cosmic sweep soundscape swell
+      if (window.FluxoraAudio && typeof window.FluxoraAudio.playCosmicRecall === 'function') {
+        window.FluxoraAudio.playCosmicRecall();
       }
 
       setApplied(true);

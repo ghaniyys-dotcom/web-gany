@@ -10,32 +10,32 @@ $services_en=collect($site->services_en??[])->map(fn($x)=>($x['icon']??'').' | '
 
 $works=collect(\App\Models\PortfolioWork::orderBy('sort_order')->get()->toArray())->map(function($x){
     $p = [
-        $x['tag'] ?? '',
-        $x['title'] ?? '',
-        $x['body'] ?? '',
-        $x['image_url'] ?? '',
-        $x['project_url'] ?? '',
-        $x['client'] ?? '',
-        $x['challenge'] ?? '',
-        $x['solution'] ?? '',
-        $x['tech_stack'] ?? '',
-        $x['results'] ?? ''
+        str_replace(["\r", "\n", "|"], " ", $x['tag'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['title'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['body'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['image_url'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['project_url'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['client'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['challenge'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['solution'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['tech_stack'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['results'] ?? '')
     ];
     return implode(' | ', $p);
 })->implode("\n");
 
 $works_en=collect(\App\Models\PortfolioWork::orderBy('sort_order')->get()->toArray())->map(function($x){
     $p = [
-        $x['tag_en'] ?? '',
-        $x['title'] ?? '',
-        $x['body_en'] ?? '',
-        $x['image_url'] ?? '',
-        $x['project_url'] ?? '',
-        $x['client'] ?? '',
-        $x['challenge_en'] ?? '',
-        $x['solution_en'] ?? '',
-        $x['tech_stack'] ?? '',
-        $x['results_en'] ?? ''
+        str_replace(["\r", "\n", "|"], " ", $x['tag_en'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['title'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['body_en'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['image_url'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['project_url'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['client'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['challenge_en'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['solution_en'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['tech_stack'] ?? ''),
+        str_replace(["\r", "\n", "|"], " ", $x['results_en'] ?? '')
     ];
     return implode(' | ', $p);
 })->implode("\n");
@@ -49,6 +49,16 @@ $process_steps_en = collect($site->process_steps_en ?? [])->map(fn($x) => ($x['i
 @endphp
 
 <div class="card">
+    <div style="background: rgba(255, 106, 26, 0.04); border: 1px solid rgba(255, 106, 26, 0.15); border-radius: 16px; padding: 20px; margin-bottom: 30px; box-shadow: 0 0 15px rgba(255, 106, 26, 0.02)">
+        <h4 style="color: #fff; margin: 0 0 8px; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--pri)">💡</span> Owner Comfort Hub — Tips Pengelolaan
+        </h4>
+        <p style="color: var(--muted); font-size: 13px; line-height: 1.6; margin: 0;">
+            Selamat datang di halaman edit konten website! Di sini Anda dapat memperbarui seluruh teks layanan, langkah pengerjaan (*Process steps*), statistik performa, dan portofolio karya Anda. 
+            Beberapa kolom yang sudah tidak digunakan di front-end (Tagline, Subtitle, dan CTA) telah disederhanakan agar Anda bisa fokus mengelola data utama dengan lebih nyaman dan bersih.
+        </p>
+    </div>
+
     <form method="POST" action="{{ route('admin.content.update') }}">
         @csrf 
         @method('PUT')
@@ -78,27 +88,11 @@ $process_steps_en = collect($site->process_steps_en ?? [])->map(fn($x) => ($x['i
         </div>
 
         <h3 style="color: #fff; margin-top: 40px; margin-bottom: 20px; font-weight: 500; font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
-            🇮🇩 / 🇬🇧 Bilingual Hero Section & Tagline
+            🇮🇩 / 🇬🇧 Bilingual Hero Section
         </h3>
 
-        <!-- Tagline Bilingual Group -->
-        <div style="background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="color: #fff; margin: 0; font-size: 14px; font-weight: 500;">Tagline</h4>
-                <button type="button" style="background: rgba(57, 255, 20, 0.1); color: var(--green); border: 1px solid rgba(57, 255, 20, 0.3); padding: 5px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: 'Space Grotesk';" onclick="translateField('tagline', 'tagline_en', this)">⚡ Auto-Translate</button>
-            </div>
-            <div class="field" style="margin-bottom: 12px;">
-                <label style="font-size: 12px; color: var(--muted);">Indonesian version</label>
-                <input id="tagline" name="tagline" value="{{ old('tagline',$site->tagline) }}">
-            </div>
-            <div class="field">
-                <label style="font-size: 12px; color: #ff5500;">English version</label>
-                <input id="tagline_en" name="tagline_en" value="{{ old('tagline_en',$site->tagline_en) }}">
-            </div>
-        </div>
-
         <!-- Hero Title Bilingual Group -->
-        <div style="background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+        <div style="background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 35px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h4 style="color: #fff; margin: 0; font-size: 14px; font-weight: 500;">Hero Title — gunakan *kata* untuk font miring/oranye menyala (contoh: *trusted*)</h4>
                 <button type="button" style="background: rgba(57, 255, 20, 0.1); color: var(--green); border: 1px solid rgba(57, 255, 20, 0.3); padding: 5px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: 'Space Grotesk';" onclick="translateField('hero_title', 'hero_title_en', this)">⚡ Auto-Translate</button>
@@ -110,53 +104,6 @@ $process_steps_en = collect($site->process_steps_en ?? [])->map(fn($x) => ($x['i
             <div class="field">
                 <label style="font-size: 12px; color: #ff5500;">English version</label>
                 <textarea id="hero_title_en" name="hero_title_en">{{ old('hero_title_en',$site->hero_title_en) }}</textarea>
-            </div>
-        </div>
-
-        <!-- Hero Subtitle Bilingual Group -->
-        <div style="background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="color: #fff; margin: 0; font-size: 14px; font-weight: 500;">Hero Subtitle</h4>
-                <button type="button" style="background: rgba(57, 255, 20, 0.1); color: var(--green); border: 1px solid rgba(57, 255, 20, 0.3); padding: 5px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: 'Space Grotesk';" onclick="translateField('hero_subtitle', 'hero_subtitle_en', this)">⚡ Auto-Translate</button>
-            </div>
-            <div class="field" style="margin-bottom: 12px;">
-                <label style="font-size: 12px; color: var(--muted);">Indonesian version</label>
-                <textarea id="hero_subtitle" name="hero_subtitle" required>{{ old('hero_subtitle',$site->hero_subtitle) }}</textarea>
-            </div>
-            <div class="field">
-                <label style="font-size: 12px; color: #ff5500;">English version</label>
-                <textarea id="hero_subtitle_en" name="hero_subtitle_en">{{ old('hero_subtitle_en',$site->hero_subtitle_en) }}</textarea>
-            </div>
-        </div>
-
-        <!-- CTA Buttons Bilingual Group -->
-        <div style="background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 35px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
-                <h4 style="color: #fff; margin: 0; font-size: 14px; font-weight: 500;">Call to Action (CTA) Buttons</h4>
-                <div style="display: flex; gap: 8px;">
-                    <button type="button" style="background: rgba(57, 255, 20, 0.1); color: var(--green); border: 1px solid rgba(57, 255, 20, 0.3); padding: 4px 10px; font-size: 10px; font-weight: 600; border-radius: 6px; cursor: pointer; font-family: 'Space Grotesk';" onclick="translateField('primary_cta', 'primary_cta_en', this)">Primary CTA</button>
-                    <button type="button" style="background: rgba(57, 255, 20, 0.1); color: var(--green); border: 1px solid rgba(57, 255, 20, 0.3); padding: 4px 10px; font-size: 10px; font-weight: 600; border-radius: 6px; cursor: pointer; font-family: 'Space Grotesk';" onclick="translateField('secondary_cta', 'secondary_cta_en', this)">Secondary CTA</button>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="field">
-                    <label>Primary CTA (ID)</label>
-                    <input id="primary_cta" name="primary_cta" value="{{ old('primary_cta',$site->primary_cta) }}">
-                </div>
-                <div class="field">
-                    <label style="color: #ff5500;">Primary CTA (EN)</label>
-                    <input id="primary_cta_en" name="primary_cta_en" value="{{ old('primary_cta_en',$site->primary_cta_en) }}">
-                </div>
-            </div>
-            <div class="grid" style="margin-top: 15px;">
-                <div class="field">
-                    <label>Secondary CTA (ID)</label>
-                    <input id="secondary_cta" name="secondary_cta" value="{{ old('secondary_cta',$site->secondary_cta) }}">
-                </div>
-                <div class="field">
-                    <label style="color: #ff5500;">Secondary CTA (EN)</label>
-                    <input id="secondary_cta_en" name="secondary_cta_en" value="{{ old('secondary_cta_en',$site->secondary_cta_en) }}">
-                </div>
             </div>
         </div>
 
@@ -337,4 +284,490 @@ $process_steps_en = collect($site->process_steps_en ?? [])->map(fn($x) => ($x['i
         <button class="btn" type="submit" style="width: 100%; padding: 15px; font-size: 15px; font-weight: 600; font-family: 'Space Grotesk';">Save All Content Changes</button>
     </form>
 </div>
+
+<style>
+/* CSS styles for the Interactive List Builders */
+.list-builder-container {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.list-builder-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.list-builder-card {
+    background: rgba(16, 16, 24, 0.5);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: cardFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.list-builder-card:hover {
+    border-color: var(--line-hover);
+    box-shadow: 0 8px 30px rgba(255, 85, 0, 0.03);
+    transform: translateY(-2px);
+}
+
+@keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.list-builder-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+}
+
+.list-builder-card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.list-builder-card-index {
+    color: var(--pri);
+    background: rgba(255, 85, 0, 0.1);
+    border: 1px solid rgba(255, 85, 0, 0.25);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.list-builder-card-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.list-builder-control-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--muted);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.list-builder-control-btn:hover {
+    background: rgba(255, 85, 0, 0.1);
+    border-color: rgba(255, 85, 0, 0.3);
+    color: #fff;
+}
+
+.list-builder-control-btn.delete-btn:hover {
+    background: rgba(255, 51, 85, 0.1);
+    border-color: rgba(255, 51, 85, 0.3);
+    color: var(--red);
+}
+
+.list-builder-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+}
+
+/* 6-Column Grid Width Spans */
+.grid-col-1 { grid-column: span 1; }
+.grid-col-2 { grid-column: span 2; }
+.grid-col-3 { grid-column: span 3; }
+.grid-col-4 { grid-column: span 4; }
+.grid-col-5 { grid-column: span 5; }
+.grid-col-6 { grid-column: span 6; }
+
+@media (max-width: 991px) {
+    .list-builder-grid > div {
+        grid-column: span 6 !important;
+    }
+}
+
+.list-builder-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.list-builder-field label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+.list-builder-field input, .list-builder-field textarea {
+    width: 100%;
+    background: rgba(10, 10, 15, 0.6);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.list-builder-field input:focus, .list-builder-field textarea:focus {
+    border-color: var(--pri);
+    box-shadow: 0 0 12px var(--pri-glow), inset 0 0 6px rgba(255, 85, 0, 0.08);
+    background: rgba(6, 6, 8, 0.85);
+}
+
+.list-builder-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.list-builder-add-btn {
+    width: 100%;
+    background: rgba(255, 85, 0, 0.03);
+    border: 1px dashed rgba(255, 85, 0, 0.2);
+    color: var(--pri);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.list-builder-add-btn:hover {
+    background: rgba(255, 85, 0, 0.08);
+    border-color: var(--pri);
+    box-shadow: 0 4px 15px rgba(255, 85, 0, 0.15);
+}
+</style>
+
+<script>
+class InteractiveListBuilder {
+    constructor(textareaId, fields, emptyDefault) {
+        this.textarea = document.getElementById(textareaId);
+        if (!this.textarea) return;
+
+        this.fields = fields;
+        this.emptyDefault = emptyDefault;
+
+        // Parse initial value
+        this.items = this.parseValue(this.textarea.value);
+
+        // Hide raw textarea
+        this.textarea.style.display = 'none';
+
+        // Create builder container in DOM
+        this.container = document.createElement('div');
+        this.container.className = 'list-builder-container';
+        this.textarea.parentNode.insertBefore(this.container, this.textarea.nextSibling);
+
+        // Render UI
+        this.render();
+
+        // Listen for external updates (e.g. translate button)
+        this.textarea.addEventListener('change', () => {
+            this.items = this.parseValue(this.textarea.value);
+            this.render();
+        });
+    }
+
+    parseValue(text) {
+        if (!text || !text.trim()) return [];
+        return text.split('\n').map(line => {
+            const cols = line.split('|').map(c => c.trim());
+            const obj = {};
+            this.fields.forEach((f, idx) => {
+                obj[f.name] = cols[idx] || '';
+            });
+            return obj;
+        });
+    }
+
+    compileValue() {
+        const text = this.items.map(item => {
+            return this.fields.map(f => {
+                const val = (item[f.name] || '').toString();
+                // strip pipe and newlines to preserve structural integrity
+                return val.replace(/[\r\n|]/g, ' ').trim();
+            }).join(' | ');
+        }).join('\n');
+
+        this.textarea.value = text;
+    }
+
+    render() {
+        this.container.innerHTML = '';
+
+        // Create list wrapper
+        const itemsWrapper = document.createElement('div');
+        itemsWrapper.className = 'list-builder-items';
+
+        if (this.items.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.style.cssText = 'text-align: center; padding: 30px; color: var(--muted); font-size: 13.5px;';
+            emptyState.textContent = 'Belum ada data. Klik "+ Tambah Item Baru" di bawah untuk memulai.';
+            itemsWrapper.appendChild(emptyState);
+        } else {
+            this.items.forEach((item, idx) => {
+                const card = this.createCard(item, idx);
+                itemsWrapper.appendChild(card);
+            });
+        }
+
+        this.container.appendChild(itemsWrapper);
+
+        // Create add button
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'list-builder-add-btn';
+        addBtn.innerHTML = `<span>➕</span> Tambah Item Baru`;
+        addBtn.addEventListener('click', () => this.addItem());
+        this.container.appendChild(addBtn);
+    }
+
+    createCard(item, idx) {
+        const card = document.createElement('div');
+        card.className = 'list-builder-card';
+
+        // Dynamic title based on title or label if available, otherwise just number
+        let displayTitle = '';
+        if (item.title) displayTitle = item.title;
+        else if (item.label) displayTitle = item.label;
+        else if (item.value) displayTitle = item.value;
+        else if (item.icon) displayTitle = item.icon;
+        else if (item.tag) displayTitle = item.tag;
+
+        if (displayTitle) {
+            displayTitle = displayTitle.length > 30 ? displayTitle.substring(0, 30) + '...' : displayTitle;
+        } else {
+            displayTitle = `Item Baru`;
+        }
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'list-builder-card-header';
+        header.innerHTML = `
+            <div class="list-builder-card-title">
+                <span class="list-builder-card-index">#${idx + 1}</span>
+                <span>${displayTitle}</span>
+            </div>
+            <div class="list-builder-card-controls">
+                <button type="button" class="list-builder-control-btn move-up-btn" title="Pindahkan Ke Atas">▲</button>
+                <button type="button" class="list-builder-control-btn move-down-btn" title="Pindahkan Ke Bawah">▼</button>
+                <button type="button" class="list-builder-control-btn delete-btn" title="Hapus Item">✕</button>
+            </div>
+        `;
+
+        // Controls events
+        header.querySelector('.move-up-btn').addEventListener('click', () => this.moveItem(idx, -1));
+        header.querySelector('.move-down-btn').addEventListener('click', () => this.moveItem(idx, 1));
+        header.querySelector('.delete-btn').addEventListener('click', () => this.deleteItem(idx));
+
+        // Disable up/down if out of bounds
+        if (idx === 0) {
+            header.querySelector('.move-up-btn').style.opacity = '0.3';
+            header.querySelector('.move-up-btn').style.pointerEvents = 'none';
+        }
+        if (idx === this.items.length - 1) {
+            header.querySelector('.move-down-btn').style.opacity = '0.3';
+            header.querySelector('.move-down-btn').style.pointerEvents = 'none';
+        }
+
+        // Grid
+        const grid = document.createElement('div');
+        grid.className = 'list-builder-grid';
+
+        this.fields.forEach(f => {
+            const fieldWrapper = document.createElement('div');
+            fieldWrapper.className = `list-builder-field ${this.getGridClass(f.width)}`;
+
+            const label = document.createElement('label');
+            label.textContent = f.label;
+            fieldWrapper.appendChild(label);
+
+            let input;
+            if (f.type === 'textarea') {
+                input = document.createElement('textarea');
+                input.value = item[f.name] || '';
+                input.rows = 2;
+            } else {
+                input = document.createElement('input');
+                input.type = 'text';
+                input.value = item[f.name] || '';
+            }
+
+            input.placeholder = f.placeholder || '';
+
+            // Handle live update
+            const updateHandler = (e) => {
+                const originalVal = e.target.value;
+                const cleanVal = originalVal.replace(/[\r\n|]/g, ' ');
+                
+                if (originalVal !== cleanVal) {
+                    const start = e.target.selectionStart;
+                    const end = e.target.selectionEnd;
+                    e.target.value = cleanVal;
+                    e.target.setSelectionRange(start, end);
+                }
+                
+                item[f.name] = cleanVal;
+                
+                // Update live header title if it is the title/label/value/icon/tag
+                if (['title', 'label', 'value', 'icon', 'tag'].includes(f.name)) {
+                    let newTitle = item.title || item.label || item.value || item.icon || item.tag || `Item Baru`;
+                    newTitle = newTitle.length > 30 ? newTitle.substring(0, 30) + '...' : newTitle;
+                    header.querySelector('.list-builder-card-title span:last-child').textContent = newTitle;
+                }
+
+                this.compileValue();
+            };
+
+            input.addEventListener('input', updateHandler);
+            input.addEventListener('change', updateHandler);
+
+            fieldWrapper.appendChild(input);
+            grid.appendChild(fieldWrapper);
+        });
+
+        card.appendChild(header);
+        card.appendChild(grid);
+        return card;
+    }
+
+    getGridClass(width) {
+        if (width === 'span 1') return 'grid-col-2';
+        if (width === 'span 1.5') return 'grid-col-3';
+        if (width === 'span 2') return 'grid-col-4';
+        if (width === 'span 3') return 'grid-col-6';
+        return 'grid-col-6';
+    }
+
+    addItem() {
+        const newItem = { ...this.emptyDefault };
+        this.items.push(newItem);
+        this.compileValue();
+        this.render();
+
+        const cards = this.container.querySelectorAll('.list-builder-card');
+        if (cards.length > 0) {
+            const lastCard = cards[cards.length - 1];
+            lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const firstInput = lastCard.querySelector('input, textarea');
+            if (firstInput) firstInput.focus();
+        }
+    }
+
+    deleteItem(idx) {
+        if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+            this.items.splice(idx, 1);
+            this.compileValue();
+            this.render();
+        }
+    }
+
+    moveItem(idx, direction) {
+        const targetIdx = idx + direction;
+        if (targetIdx < 0 || targetIdx >= this.items.length) return;
+
+        const temp = this.items[idx];
+        this.items[idx] = this.items[targetIdx];
+        this.items[targetIdx] = temp;
+
+        this.compileValue();
+        this.render();
+
+        setTimeout(() => {
+            const cards = this.container.querySelectorAll('.list-builder-card');
+            if (cards[targetIdx]) {
+                cards[targetIdx].style.borderColor = 'var(--pri)';
+                cards[targetIdx].style.boxShadow = '0 0 20px var(--pri-glow)';
+                cards[targetIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    cards[targetIdx].style.borderColor = '';
+                    cards[targetIdx].style.boxShadow = '';
+                }, 1000);
+            }
+        }, 50);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Stats Builders
+    const statsFields = [
+        { name: 'value', label: 'Value', type: 'text', placeholder: 'e.g. 42+', width: 'span 1' },
+        { name: 'label', label: 'Label', type: 'text', placeholder: 'e.g. projects shipped', width: 'span 2' }
+    ];
+    const statsDefault = { value: '', label: '' };
+    new InteractiveListBuilder('stats_lines', statsFields, statsDefault);
+    new InteractiveListBuilder('stats_lines_en', statsFields, statsDefault);
+
+    // 2. Services Builders
+    const servicesFields = [
+        { name: 'icon', label: 'Icon', type: 'text', placeholder: 'e.g. ✦', width: 'span 1' },
+        { name: 'title', label: 'Title', type: 'text', placeholder: 'e.g. Immersive Interface Design', width: 'span 2' },
+        { name: 'body', label: 'Body / Description', type: 'textarea', placeholder: 'Presents an exclusive...', width: 'span 3' }
+    ];
+    const servicesDefault = { icon: '', title: '', body: '' };
+    new InteractiveListBuilder('services_lines', servicesFields, servicesDefault);
+    new InteractiveListBuilder('services_lines_en', servicesFields, servicesDefault);
+
+    // 3. Process Steps Builders
+    const processStepsFields = [
+        { name: 'icon', label: 'Icon / Key', type: 'text', placeholder: 'e.g. Discover', width: 'span 1' },
+        { name: 'title', label: 'Title', type: 'text', placeholder: 'e.g. Discover', width: 'span 1' },
+        { name: 'metric', label: 'Metric / Tagline', type: 'text', placeholder: 'e.g. Tactics, Research, & Plan', width: 'span 1' },
+        { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Mapping goals...', width: 'span 3' }
+    ];
+    const processStepsDefault = { icon: '', title: '', metric: '', description: '' };
+    new InteractiveListBuilder('process_steps_lines', processStepsFields, processStepsDefault);
+    new InteractiveListBuilder('process_steps_lines_en', processStepsFields, processStepsDefault);
+
+    // 4. Works Showcase Builders
+    const worksFields = [
+        { name: 'tag', label: 'Tag', type: 'text', placeholder: 'e.g. Product Launch', width: 'span 1' },
+        { name: 'title', label: 'Project Title', type: 'text', placeholder: 'e.g. OrbitOS', width: 'span 1' },
+        { name: 'client', label: 'Client (opsional)', type: 'text', placeholder: 'e.g. Nebula Capital', width: 'span 1' },
+        { name: 'image_url', label: 'Image URL (opsional)', type: 'text', placeholder: 'e.g. images/mockup_orbit.png', width: 'span 1.5' },
+        { name: 'project_url', label: 'Project URL (opsional)', type: 'text', placeholder: 'e.g. https://orbitos.demo', width: 'span 1.5' },
+        { name: 'body', label: 'Brief Description', type: 'textarea', placeholder: 'Launch page SaaS dengan...', width: 'span 3' },
+        { name: 'challenge', label: 'Challenge (opsional)', type: 'textarea', placeholder: 'Tantangan kami adalah...', width: 'span 1.5' },
+        { name: 'solution', label: 'Solution (opsional)', type: 'textarea', placeholder: 'Solusi kami adalah...', width: 'span 1.5' },
+        { name: 'tech_stack', label: 'Tech Stack (opsional)', type: 'text', placeholder: 'e.g. Laravel, React, Three.js', width: 'span 1.5' },
+        { name: 'results', label: 'Results (opsional)', type: 'text', placeholder: 'e.g. Target konversi terlampaui...', width: 'span 1.5' }
+    ];
+    const worksDefault = { tag: '', title: '', client: '', image_url: '', project_url: '', body: '', challenge: '', solution: '', tech_stack: '', results: '' };
+    new InteractiveListBuilder('works_lines', worksFields, worksDefault);
+    new InteractiveListBuilder('works_lines_en', worksFields, worksDefault);
+});
+</script>
 @endsection

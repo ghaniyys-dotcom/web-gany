@@ -9,6 +9,8 @@
 @vite(['resources/js/app.js'])
 </head>
 <body>
+<div class="ambient-cosmic-backdrop"></div>
+<div class="analog-noise-overlay"></div>
 <div id="pm-cursor"></div>
 <div id="pm-cursor-aura"><span class="pm-cursor-label"></span></div>
 <div class="page-transition-overlay" id="pageTransition"></div>
