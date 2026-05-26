@@ -31,15 +31,15 @@
           </div>
         @endif
         <div class="browser-overlay">
-          <a href="{{ route('portfolio.detail', $slug) }}" class="btn btn-primary btn-sm">{{ __('View Case Study ↗') }}</a>
+          <a href="{{ !empty($slug) ? route('portfolio.detail', $slug) : '#' }}" class="btn btn-primary btn-sm">{{ __('View Case Study ↗') }}</a>
         </div>
       </div>
     </div>
     <span class="tag">{{ $work['tag'] ?? 'Project' }}</span>
-    <h3><a href="{{ route('portfolio.detail', $slug) }}" style="color:inherit;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--purple)'" onmouseout="this.style.color='inherit'">{{ $work['title'] ?? '' }}</a></h3>
+    <h3><a href="{{ !empty($slug) ? route('portfolio.detail', $slug) : '#' }}" style="color:inherit;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--purple)'" onmouseout="this.style.color='inherit'">{{ $work['title'] ?? '' }}</a></h3>
     <p>{{ $work['body'] ?? '' }}</p>
     <div style="display:flex;gap:10px;margin-top:14px;">
-      <a class="btn btn-primary" href="{{ route('portfolio.detail', $slug) }}" style="padding:6px 12px;font-size:13px;display:inline-flex;width:fit-content;margin:0">{{ __('Read Case Study →') }}</a>
+      <a class="btn btn-primary" href="{{ !empty($slug) ? route('portfolio.detail', $slug) : '#' }}" style="padding:6px 12px;font-size:13px;display:inline-flex;width:fit-content;margin:0">{{ __('Read Case Study →') }}</a>
       @if(!empty($work['project_url']))
         <a class="btn btn-ghost" href="{{ $work['project_url'] }}" target="_blank" rel="noopener" style="padding:6px 12px;font-size:13px;display:inline-flex;width:fit-content;margin:0">{{ __('Live Site ↗') }}</a>
       @endif

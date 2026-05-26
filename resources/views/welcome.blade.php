@@ -244,7 +244,7 @@
           <div class="bento-overlay-details">
             <span class="bento-card-tag">{{ $work['tag'] ?? '' }}</span>
             <h3 class="bento-card-title">
-              <a href="{{ route('portfolio.detail', $work['slug'] ?? '#') }}" style="color:inherit;text-decoration:none;" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
+              <a href="{{ !empty($slug) ? route('portfolio.detail', $slug) : '#' }}" style="color:inherit;text-decoration:none;" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
                 {{ $work['title'] ?? '' }}
               </a>
             </h3>
