@@ -37,7 +37,7 @@
     <div class="intro-content-wrapper" style="position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0;">
       <div class="intro-glow-orb"></div>
       <canvas id="ember-particles"></canvas>
-      
+
       <!-- 🎬 Giant Defocused Warm-White Serif 'halo' Centerpiece -->
       <div class="intro-line intro-name" id="iLine1">halo</div>
     </div>
@@ -95,26 +95,27 @@
   <section class="stats-ribbon-section">
     <div class="wrap stats-ribbon-grid">
       @foreach($stats as $index => $stat)
-        <div class="stats-ribbon-item" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
-          <strong>{{ $stat['value'] }}</strong>
-          <small>{{ $stat['label'] }}</small>
-        </div>
-        @if($index < count($stats) - 1)
-          <div class="stats-ribbon-divider"></div>
-        @endif
-      @endforeach
+      <div class="stats-ribbon-item" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
+        <strong>{{ $stat['value'] }}</strong>
+        <small>{{ $stat['label'] }}</small>
+      </div>
+      @if($index < count($stats) - 1)
+        <div class="stats-ribbon-divider">
+    </div>
+    @endif
+    @endforeach
     </div>
   </section>
   @endif
 
   @php
-    $photoPath = $founder->photo_path && file_exists(public_path($founder->photo_path)) 
-        ? asset($founder->photo_path) 
-        : asset('images/founder.jpeg');
-        
-    $signaturePath = $founder->signature_path && file_exists(public_path($founder->signature_path)) 
-        ? asset($founder->signature_path) 
-        : asset('images/signature.png');
+  $photoPath = $founder->photo_path && file_exists(public_path($founder->photo_path))
+  ? asset($founder->photo_path)
+  : asset('images/founder.jpeg');
+
+  $signaturePath = $founder->signature_path && file_exists(public_path($founder->signature_path))
+  ? asset($founder->signature_path)
+  : asset('images/signature.png');
   @endphp
   <section class="founder-section">
     <div class="wrap founder-grid">
@@ -143,42 +144,46 @@
     {{-- Snap Carousel Track --}}
     <div class="snap-carousel-track" id="servicesSnapTrack">
       @foreach(($site->services ?? []) as $index => $service)
-        @php
-          $directionClass = 'reveal-slide-alt';
-          if ($index % 2 === 0) {
-              $directionClass = 'reveal-stagger-cascade';
-          }
-        @endphp
-        <div class="snap-slide" data-slide-index="{{ $index }}">
-          <div class="tech-grid-bg"></div>
-          <span class="slide-giant-num">0{{ $index + 1 }}</span>
-          
-          <div class="slide-content-box {{ $directionClass }}">
-            <h3 class="slide-title-glitch" data-text="{{ $service['title'] ?? '' }}" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
-              {{ $service['title'] ?? '' }}
-            </h3>
-            <p class="slide-desc">
-              {{ $service['body'] ?? '' }}
-            </p>
-          </div>
+      @php
+      $directionClass = 'reveal-slide-alt';
+      if ($index % 2 === 0) {
+      $directionClass = 'reveal-stagger-cascade';
+      }
+      @endphp
+      <div class="snap-slide" data-slide-index="{{ $index }}">
+        <div class="tech-grid-bg"></div>
+        <span class="slide-giant-num">0{{ $index + 1 }}</span>
+
+        <div class="slide-content-box {{ $directionClass }}">
+          <h3 class="slide-title-glitch" data-text="{{ $service['title'] ?? '' }}" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
+            {{ $service['title'] ?? '' }}
+          </h3>
+          <p class="slide-desc">
+            {{ $service['body'] ?? '' }}
+          </p>
         </div>
+      </div>
       @endforeach
     </div>
 
     {{-- Premium Floating Control Dock --}}
     <div class="carousel-control-dock">
       <button type="button" class="dock-arrow-btn" id="servicesArrowLeft" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();" style="opacity: 0.15; pointer-events: none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
       </button>
-      
+
       <div class="carousel-indicator-bar" id="servicesCarouselDots" style="margin: 0 8px;">
         @foreach(($site->services ?? []) as $index => $service)
-          <div class="carousel-dot-indicator {{ $index === 0 ? 'active' : '' }}" data-dot-index="{{ $index }}"></div>
+        <div class="carousel-dot-indicator {{ $index === 0 ? 'active' : '' }}" data-dot-index="{{ $index }}"></div>
         @endforeach
       </div>
 
       <button type="button" class="dock-arrow-btn" id="servicesArrowRight" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
       </button>
     </div>
   </section>
@@ -199,53 +204,53 @@
       <div class="bento-filter-pill-track" id="bentoFilterTrack">
         <div class="bento-filter-pill active" data-filter="all" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">{{ __('All Projects') }}</div>
         @php
-          $tags = collect($site->works)->pluck('tag')->unique()->filter();
+        $tags = collect($site->works)->pluck('tag')->unique()->filter();
         @endphp
         @foreach($tags as $tag)
-          <div class="bento-filter-pill" data-filter="{{ Str::slug($tag) }}" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">{{ $tag }}</div>
+        <div class="bento-filter-pill" data-filter="{{ Str::slug($tag) }}" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">{{ $tag }}</div>
         @endforeach
       </div>
 
       {{-- Asymmetric Bento Grid --}}
       <div class="bento-grid-custom reveal-scale-blur" id="bentoGridContainer">
         @foreach(collect($site->works)->values() as $index => $work)
-          @php
-            $slug = \Illuminate\Support\Str::slug($work['title'] ?? '');
-            $bentoClass = 'bento-box-standard';
-            if ($index === 0) {
-                $bentoClass = 'bento-box-hero';
-            } elseif ($index === 1) {
-                $bentoClass = 'bento-box-wide';
-            } elseif ($index === 2) {
-                $bentoClass = 'bento-box-tall';
-            }
-          @endphp
-          <article class="bento-card-custom {{ $bentoClass }} magnetic-card" data-category="{{ Str::slug($work['tag'] ?? 'all') }}" data-tilt-enabled="{{ $index === 1 ? 'true' : 'false' }}">
-            {{-- Glossy Sheen Reflection Overlay --}}
-            <div class="bento-card-sheen"></div>
+        @php
+        $slug = \Illuminate\Support\Str::slug($work['title'] ?? '');
+        $bentoClass = 'bento-box-standard';
+        if ($index === 0) {
+        $bentoClass = 'bento-box-hero';
+        } elseif ($index === 1) {
+        $bentoClass = 'bento-box-wide';
+        } elseif ($index === 2) {
+        $bentoClass = 'bento-box-tall';
+        }
+        @endphp
+        <article class="bento-card-custom {{ $bentoClass }} magnetic-card" data-category="{{ Str::slug($work['tag'] ?? 'all') }}" data-tilt-enabled="{{ $index === 1 ? 'true' : 'false' }}">
+          {{-- Glossy Sheen Reflection Overlay --}}
+          <div class="bento-card-sheen"></div>
 
-            {{-- Background Media --}}
-            <div class="bento-card-media">
-              @if(!empty($work['image_url']))
-                <img src="{{ asset($work['image_url']) }}" alt="{{ $work['title'] ?? '' }}" class="bento-media-img">
-              @else
-                <div class="w-full h-full flex flex-col justify-center items-center bg-[#07070a] text-zinc-800" style="min-height:380px;">
-                  <span class="text-4xl font-extrabold select-none opacity-10">GANY LABS</span>
-                </div>
-              @endif
+          {{-- Background Media --}}
+          <div class="bento-card-media">
+            @if(!empty($work['image_url']))
+            <img src="{{ asset($work['image_url']) }}" alt="{{ $work['title'] ?? '' }}" class="bento-media-img">
+            @else
+            <div class="w-full h-full flex flex-col justify-center items-center bg-[#07070a] text-zinc-800" style="min-height:380px;">
+              <span class="text-4xl font-extrabold select-none opacity-10">GANY LABS</span>
             </div>
+            @endif
+          </div>
 
-            {{-- Content Details --}}
-            <div class="bento-overlay-details">
-              <span class="bento-card-tag">{{ $work['tag'] ?? '' }}</span>
-              <h3 class="bento-card-title">
-                <a href="{{ route('portfolio.detail', $slug) }}" style="color:inherit;text-decoration:none;" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
-                  {{ $work['title'] ?? '' }}
-                </a>
-              </h3>
-              <p class="bento-card-desc">{{ $work['body'] ?? '' }}</p>
-            </div>
-          </article>
+          {{-- Content Details --}}
+          <div class="bento-overlay-details">
+            <span class="bento-card-tag">{{ $work['tag'] ?? '' }}</span>
+            <h3 class="bento-card-title">
+              <a href="{{ route('portfolio.detail', $work['slug'] ?? '#') }}" style="color:inherit;text-decoration:none;" onclick="if(window.FluxoraAudio) window.FluxoraAudio.playTactileClick();">
+                {{ $work['title'] ?? '' }}
+              </a>
+            </h3>
+            <p class="bento-card-desc">{{ $work['body'] ?? '' }}</p>
+          </div>
+        </article>
         @endforeach
       </div>
       @else
@@ -285,8 +290,8 @@
     {{-- Vertical Wire Track (Winding Neon Path) --}}
     <div class="timeline-wire-container">
       <svg class="timeline-svg-wire" viewBox="0 0 80 1000" fill="none" preserveAspectRatio="none">
-        <path d="M 40,0 Q 15,125 40,250 T 40,500 T 40,750 T 40,1000" class="timeline-wire-track" stroke-width="4" stroke-linecap="round"/>
-        <path d="M 40,0 Q 15,125 40,250 T 40,500 T 40,750 T 40,1000" class="timeline-wire-draw" id="timelineWireDraw" stroke-width="4" stroke-linecap="round"/>
+        <path d="M 40,0 Q 15,125 40,250 T 40,500 T 40,750 T 40,1000" class="timeline-wire-track" stroke-width="4" stroke-linecap="round" />
+        <path d="M 40,0 Q 15,125 40,250 T 40,500 T 40,750 T 40,1000" class="timeline-wire-draw" id="timelineWireDraw" stroke-width="4" stroke-linecap="round" />
       </svg>
     </div>
 
@@ -306,45 +311,58 @@
       {{-- Alternating Steps Timeline --}}
       <div class="flex flex-col relative">
         @php
-          $steps = $site->process_steps ?? [];
-          $svgMap = [
-              'discover' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20"/></svg>',
-              'design' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122l.18.18a3 3 0 004.3 0l6.19-6.19a3 3 0 00-4.3-4.3l-6.19 6.19a3 3 0 000 4.3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 12.5L9.75 14h1.5l.375-1.5 M3 21v-3h3"/></svg>',
-              'build' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>',
-              'launch' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.59 8.42m5.84 5.95a14.98 14.98 0 01-5.84-5.95m0 0a14.98 14.98 0 00-6.16 12.12A14.98 14.98 0 009.59 8.42m0 0H3.75v5.625h5.625"/></svg>'
-          ];
+        $steps = $site->process_steps ?? [];
+        $svgMap = [
+        'discover' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5">
+          <circle cx="12" cy="12" r="10" />
+          <path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20" />
+        </svg>',
+        'design' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122l.18.18a3 3 0 004.3 0l6.19-6.19a3 3 0 00-4.3-4.3l-6.19 6.19a3 3 0 000 4.3z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 12.5L9.75 14h1.5l.375-1.5 M3 21v-3h3" />
+        </svg>',
+        'build' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+        </svg>',
+        'launch' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.59 8.42m5.84 5.95a14.98 14.98 0 01-5.84-5.95m0 0a14.98 14.98 0 00-6.16 12.12A14.98 14.98 0 009.59 8.42m0 0H3.75v5.625h5.625" />
+        </svg>'
+        ];
         @endphp
 
         @foreach($steps as $index => $step)
-          @php
-            $isEven = $index % 2 === 0;
-            $stepClass = $isEven ? 'timeline-step-left' : 'timeline-step-right';
-            $stepIcon = strtolower($step['icon'] ?? $step['title'] ?? '');
-          @endphp
-          <div class="timeline-step-row {{ $stepClass }}" data-step-index="{{ $index }}">
-            <div class="timeline-node-dot"></div>
-            
-            <div class="timeline-step-col">
-              <div class="timeline-accordion-box" onclick="toggleTimelineAccordion(this)">
-                <div class="timeline-accordion-header">
-                  <div class="flex items-center gap-3">
-                    <span class="text-zinc-600 font-mono text-xs select-none">0{{ $index + 1 }} //</span>
-                    <h3>{{ $step['title'] ?? '' }}</h3>
-                  </div>
-                  <div class="timeline-accordion-icon">
-                    {!! $svgMap[$stepIcon] ?? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20"/></svg>' !!}
-                  </div>
+        @php
+        $isEven = $index % 2 === 0;
+        $stepClass = $isEven ? 'timeline-step-left' : 'timeline-step-right';
+        $stepIcon = strtolower($step['icon'] ?? $step['title'] ?? '');
+        @endphp
+        <div class="timeline-step-row {{ $stepClass }}" data-step-index="{{ $index }}">
+          <div class="timeline-node-dot"></div>
+
+          <div class="timeline-step-col">
+            <div class="timeline-accordion-box" onclick="toggleTimelineAccordion(this)">
+              <div class="timeline-accordion-header">
+                <div class="flex items-center gap-3">
+                  <span class="text-zinc-600 font-mono text-xs select-none">0{{ $index + 1 }} //</span>
+                  <h3>{{ $step['title'] ?? '' }}</h3>
                 </div>
-                
-                <div class="timeline-accordion-content">
-                  <span class="block text-[11px] font-mono uppercase tracking-wider mb-2" style="color:var(--purple)">{{ $step['metric'] ?? '' }}</span>
-                  <p class="timeline-accordion-desc">
-                    {{ $step['body'] ?? $step['desc'] ?? '' }}
-                  </p>
+                <div class="timeline-accordion-icon">
+                  {!! $svgMap[$stepIcon] ?? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5">
+                    <circle cx="12" cy="12" r="10" />
+                    <path stroke-linecap="round" d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10zM2 12h20" />
+                  </svg>' !!}
                 </div>
+              </div>
+
+              <div class="timeline-accordion-content">
+                <span class="block text-[11px] font-mono uppercase tracking-wider mb-2" style="color:var(--purple)">{{ $step['metric'] ?? '' }}</span>
+                <p class="timeline-accordion-desc">
+                  {{ $step['body'] ?? $step['desc'] ?? '' }}
+                </p>
               </div>
             </div>
           </div>
+        </div>
         @endforeach
       </div>
     </div>
