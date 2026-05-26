@@ -76,7 +76,7 @@ body.page-glow::after {
 }
 
 a { text-decoration: none; color: inherit; }
-.wrap { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+.wrap { width: min(1360px, calc(100% - 40px)); margin: 0 auto; }
 
 /* ==========================================================================
    NAVIGATION — Dark Cinematic Glass
@@ -2188,7 +2188,7 @@ main {
   .founder-heading { font-size: 34px; }
 }
 @media (max-width: 640px) {
-  .wrap { width: min(100% - 24px, 1160px); }
+  .wrap { width: min(100% - 24px, 1360px); }
   .hero { padding: 48px 0 32px; }
   .section { padding: 56px 0; }
   .trust { gap: 20px; }

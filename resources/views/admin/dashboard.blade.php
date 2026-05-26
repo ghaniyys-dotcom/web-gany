@@ -232,7 +232,7 @@
     </div>
     <hr style="border-color: rgba(255, 85, 0, 0.1); margin: 0 0 20px 0;">
     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-        <form method="POST" action="{{ route('portfolio.reset') }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset portofolio? Semua data kustom portfolio saat ini akan dihapus dan dikembalikan ke 3 project premium bawaan.');" style="margin: 0;">
+        <form method="POST" action="{{ route('admin.portfolio.reset') }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset portofolio? Semua data kustom portfolio saat ini akan dihapus dan dikembalikan ke 3 project premium bawaan.');" style="margin: 0;">
             @csrf
             <button type="submit" class="btn" style="background: linear-gradient(135deg, #ff5500, #ff2200); color: #fff; border: none; padding: 12px 24px; font-weight: 600; font-family: 'Space Grotesk'; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 85, 0, 0.2); transition: all 0.2s;">
                 🔄 Reset Portfolio Showcase
