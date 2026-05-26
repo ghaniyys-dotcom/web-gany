@@ -63,13 +63,13 @@
     </div>
   </header>
 
-  @if(isset($orbitSkills) && count($orbitSkills) > 0)
+  @if(isset($skills) && count($skills) > 0)
   <div class="marquee-section">
     <div class="marquee-wrapper">
       <span class="marquee-title">Capabilities</span>
       <div class="marquee-track">
         <div class="marquee-content">
-          @foreach($orbitSkills as $s)
+          @foreach($skills as $s)
           <span class="marquee-item">
             <span class="marquee-dot" style="color: {{ $s->color ?? 'var(--purple)' }}; background-color: {{ $s->color ?? 'var(--purple)' }}"></span>
             {{ $s->name }}
@@ -77,7 +77,7 @@
           @endforeach
         </div>
         <div class="marquee-content" aria-hidden="true">
-          @foreach($orbitSkills as $s)
+          @foreach($skills as $s)
           <span class="marquee-item">
             <span class="marquee-dot" style="color: {{ $s->color ?? 'var(--purple)' }}; background-color: {{ $s->color ?? 'var(--purple)' }}"></span>
             {{ $s->name }}

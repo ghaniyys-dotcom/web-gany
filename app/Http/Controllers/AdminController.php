@@ -372,6 +372,7 @@ class AdminController extends Controller
 
     public function skills()
     {
+        Skill::checkAndSeedDefaults();
         return view('admin.skills', ['items' => Skill::orderBy('sort_order')->get()]);
     }
 

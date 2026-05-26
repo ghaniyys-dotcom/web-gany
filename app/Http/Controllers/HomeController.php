@@ -70,6 +70,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $this->logVisit($request, '/');
+        Skill::checkAndSeedDefaults();
         return view('welcome', [
             'site'         => SiteSetting::current(),
             'intro'        => IntroSetting::current(),
@@ -85,6 +86,7 @@ class HomeController extends Controller
     public function about(Request $request)
     {
         $this->logVisit($request, '/about');
+        Skill::checkAndSeedDefaults();
         return view('about', [
             'site'   => SiteSetting::current(),
             'intro'  => IntroSetting::current(),

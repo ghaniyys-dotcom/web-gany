@@ -29,6 +29,28 @@ class Skill extends Model
             ['name' => 'Git',           'level' => 92, 'years' => 5, 'category' => 'DevOps',   'color' => '#f05032', 'sort_order' => 10],
             ['name' => 'UI / UX',       'level' => 82, 'years' => 3, 'category' => 'Design',   'color' => '#e02f83', 'sort_order' => 11],
             ['name' => 'Livewire',      'level' => 88, 'years' => 2, 'category' => 'Backend',  'color' => '#fb70a9', 'sort_order' => 12],
+            ['name' => 'React',         'level' => 90, 'years' => 3, 'category' => 'Frontend', 'color' => '#61dafb', 'sort_order' => 13],
+            ['name' => 'Three.js',      'level' => 80, 'years' => 2, 'category' => 'Frontend', 'color' => '#ffffff', 'sort_order' => 14],
+            ['name' => 'Figma',         'level' => 85, 'years' => 3, 'category' => 'Design',   'color' => '#f24e1e', 'sort_order' => 15],
         ];
+    }
+
+    public static function checkAndSeedDefaults(): void
+    {
+        foreach (self::defaults() as $s) {
+            if (!self::where('name', $s['name'])->exists()) {
+                $inOrbit = in_array($s['name'], ['Laravel', 'PHP', 'JavaScript', 'MySQL', 'CSS / Tailwind', 'React', 'Three.js', 'Figma']);
+                self::create([
+                    'name'       => $s['name'],
+                    'level'      => $s['level'],
+                    'years'      => $s['years'],
+                    'category'   => $s['category'],
+                    'color'      => $s['color'],
+                    'sort_order' => $s['sort_order'],
+                    'is_active'  => true,
+                    'in_orbit'   => $inOrbit,
+                ]);
+            }
+        }
     }
 }
