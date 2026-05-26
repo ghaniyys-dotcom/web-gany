@@ -9,7 +9,7 @@ class FluxoraSynth {
     this.ctx = null;
     this.masterGain = null;
     this.droneGain = null;
-    this.isMuted = localStorage.getItem('pm_audio_muted') !== 'false'; // Default to muted to respect user/browser autoplay
+    this.isMuted = localStorage.getItem('pm_audio_muted') === 'true'; // Default to unmuted (false) so sound starts immediately on first load
     this.droneOsc1 = null;
     this.droneOsc2 = null;
     this.droneFilter = null;

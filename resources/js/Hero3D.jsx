@@ -580,13 +580,18 @@ export default function Hero3D({ initialSkills }) {
 
   // 💥 Ignite Big Bang Explosion precisely on curtain opening OR on direct load!
   useEffect(() => {
-    const isIntroActive = typeof window !== 'undefined' && 
-                          typeof document !== 'undefined' && 
-                          !!document.getElementById('intro-overlay') && 
-                          !sessionStorage.getItem('pm_intro_seen');
+    let isIntroActive = false;
+    try {
+      isIntroActive = typeof window !== 'undefined' && 
+                      typeof document !== 'undefined' && 
+                      !!document.getElementById('intro-overlay');
+    } catch (e) {
+      isIntroActive = false;
+    }
 
     if (isIntroActive) {
       const handleDismiss = () => {
+        clearTimeout(fallbackTimer);
         setTimeout(() => {
           setExploded(true);
           // 🔊 Play elegant cosmic Big Bang explosion sound!
@@ -602,7 +607,17 @@ export default function Hero3D({ initialSkills }) {
         }, 500); // 500ms delay matches the curtains parting peak perfectly!
       };
       window.addEventListener('intro-dismissed', handleDismiss);
-      return () => window.removeEventListener('intro-dismissed', handleDismiss);
+
+      // Fallback: trigger after 4.5 seconds anyway if the intro overlay is hidden/broken/stuck
+      const fallbackTimer = setTimeout(() => {
+        window.removeEventListener('intro-dismissed', handleDismiss);
+        setExploded(true);
+      }, 4500);
+
+      return () => {
+        window.removeEventListener('intro-dismissed', handleDismiss);
+        clearTimeout(fallbackTimer);
+      };
     } else {
       // Intro overlay is already seen. Trigger on FIRST user interaction (mousemove, scroll, click, touch)
       // to bypass browser autoplay blocks and ensure the explosion sound plays 100% reliably!
@@ -673,7 +688,7 @@ export default function Hero3D({ initialSkills }) {
     { name: 'Figma',         radius: 2.0, yOffset:  0.45 },
   ];
 
-  const rawSkills = (initialSkills && initialSkills.length > 0) ? initialSkills : defaultSkills;
+  const rawSkills = defaultSkills;
   
   const techLogos = rawSkills.map((skill, index) => {
     const normalizedName = skill.name.toLowerCase().replace(/[^a-z0-9]/g, '');

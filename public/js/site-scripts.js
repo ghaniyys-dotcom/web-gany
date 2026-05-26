@@ -916,7 +916,7 @@ function initEmberParticles(){
 }
 
 if(introOverlay){
-  const seen=sessionStorage.getItem('pm_intro_seen');
+  let seen = false;
   if(seen){
     introOverlay.style.display='none';
   }else{

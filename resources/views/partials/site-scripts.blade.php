@@ -345,4 +345,6 @@
     }
   };
 </script>
+<script src="{{ asset('js/audio-engine.js') }}"></script>
 <script src="{{ asset('js/site-scripts.js') }}" defer></script>
+

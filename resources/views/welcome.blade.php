@@ -107,16 +107,21 @@
   </section>
   @endif
 
+  @php
+    $photoPath = $founder->photo_path && file_exists(public_path($founder->photo_path)) 
+        ? asset($founder->photo_path) 
+        : asset('images/founder.jpeg');
+        
+    $signaturePath = $founder->signature_path && file_exists(public_path($founder->signature_path)) 
+        ? asset($founder->signature_path) 
+        : asset('images/signature.png');
+  @endphp
   <section class="founder-section">
     <div class="wrap founder-grid">
       <div class="founder-visual" id="founder-tilt" data-parallax data-parallax-speed="0.08">
-        @if($founder->photo_path)
-        <img src="{{ asset($founder->photo_path) }}" alt="Founder Portrait" class="founder-img">
-        @else
-        <div class="founder-placeholder-avatar">👤</div>
-        @endif
+        <img src="{{ $photoPath }}" alt="Founder Portrait" class="founder-img">
       </div>
-      <div id="about-content-mount" data-eyebrow="{{ $founder->eyebrow }}" data-heading="{{ $founder->heading }}" data-description="{{ $founder->description }}" data-signature="{{ $founder->signature_path ? asset($founder->signature_path) : '' }}"></div>
+      <div id="about-content-mount" data-eyebrow="{{ $founder->eyebrow }}" data-heading="{{ $founder->heading }}" data-description="{{ $founder->description }}" data-signature="{{ $signaturePath }}"></div>
     </div>
   </section>
 
