@@ -221,7 +221,6 @@ const ConstellationNode = ({ name, skillIndex, totalSkills, targetPos, exploded,
       <mesh
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        style={{ cursor: 'pointer' }}
       >
         <sphereGeometry args={[0.85, 16, 16]} />
         <meshBasicMaterial visible={false} />

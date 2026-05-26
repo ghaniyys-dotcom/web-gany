@@ -26,7 +26,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .fade-in { transition: none; }
@@ -1885,6 +1885,10 @@ main {
   font-size: 80px;
 }
 
+#about-content-mount {
+  display: contents;
+}
+
 .founder-content {
   display: flex;
   flex-direction: column;
@@ -2733,6 +2737,7 @@ html.lenis {
   max-width: none;
   max-height: none;
   opacity: 0.85;
+  pointer-events: auto !important;
 }
 @media (max-width: 991px) {
   .hero-hologram-centerpiece {
@@ -3101,19 +3106,25 @@ html.lenis {
   color: #ff6a1a;
 }
 .bento-card-title {
-  font-size: clamp(20px, 3.5vw, 32px);
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.02em;
-  margin: 0 0 10px 0;
+  font-size: clamp(18px, 2vw, 24px) !important;
+  font-weight: 800 !important;
+  color: #fff !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 0 6px 0 !important;
   font-family: 'Space Grotesk', sans-serif;
+  line-height: 1.2 !important;
 }
 .bento-card-desc {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  max-width: 520px;
-  margin: 0;
-  line-height: 1.5;
+  font-size: 13px !important;
+  color: rgba(255,255,255,0.7) !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
 
 /* Horizontal pill scrolling filter */
@@ -3350,7 +3361,7 @@ html.lenis {
 @media (max-width: 768px) {
   .timeline-wire-container {
     left: 20px;
-    transform: none;
+    transform: translateX(-50%);
   }
   .timeline-node-dot {
     left: 20px;

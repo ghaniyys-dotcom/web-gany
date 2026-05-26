@@ -310,7 +310,14 @@
           const dotRect = dot.getBoundingClientRect();
           return ((dotRect.top + dotRect.height / 2) - containerRect.top) / totalHeight * 1000;
         });
-        const d = `M 40,0 Q 15,${svgY[0] / 2} 40,${svgY[0]} T 40,${svgY[1]} T 40,${svgY[2]} T 40,${svgY[3]} L 40,1000`;
+        let d = 'M 40,0';
+        if (svgY.length > 0) {
+          d += ` Q 15,${svgY[0] / 2} 40,${svgY[0]}`;
+          for (let i = 1; i < svgY.length; i++) {
+            d += ` T 40,${svgY[i]}`;
+          }
+        }
+        d += ' L 40,1000';
         track.setAttribute('d', d);
         wireDraw.setAttribute('d', d);
         const pathLength = wireDraw.getTotalLength();
