@@ -222,6 +222,25 @@
     </div>
 </div>
 
+<!-- System Recovery & Emergency Actions -->
+<div class="card" style="margin-top: 30px; border: 1px solid rgba(255, 85, 0, 0.15); background: rgba(255, 85, 0, 0.015);">
+    <div style="margin-bottom: 15px;">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: #ff5500; display: flex; align-items: center; gap: 8px;">
+            <span>🛡️</span> System Recovery & Emergency Tools
+        </h2>
+        <p class="muted" style="margin: 6px 0 0; font-size: 13px;">Gunakan perkakas darurat ini jika data website Anda di VPS berantakan atau terjadi duplikasi data akibat perpindahan sistem.</p>
+    </div>
+    <hr style="border-color: rgba(255, 85, 0, 0.1); margin: 0 0 20px 0;">
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <form method="POST" action="{{ route('portfolio.reset') }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset portofolio? Semua data kustom portfolio saat ini akan dihapus dan dikembalikan ke 3 project premium bawaan.');" style="margin: 0;">
+            @csrf
+            <button type="submit" class="btn" style="background: linear-gradient(135deg, #ff5500, #ff2200); color: #fff; border: none; padding: 12px 24px; font-weight: 600; font-family: 'Space Grotesk'; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 85, 0, 0.2); transition: all 0.2s;">
+                🔄 Reset Portfolio Showcase
+            </button>
+        </form>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const tooltip = document.getElementById('chart-tooltip');

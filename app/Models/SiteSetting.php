@@ -113,7 +113,13 @@ class SiteSetting extends Model
 
     public function getWorksAttribute()
     {
-        return \App\Models\PortfolioWork::orderBy('sort_order')->get()->toArray();
+        return \App\Models\PortfolioWork::where('is_active', true)
+            ->where('title', '!=', '')
+            ->whereNotNull('title')
+            ->whereRaw('LENGTH(title) <= 120')
+            ->orderBy('sort_order')
+            ->get()
+            ->toArray();
     }
 
     public static function current(): self

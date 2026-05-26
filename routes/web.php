@@ -54,6 +54,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin', 'throttle:60,1'])->
     Route::post('/skills', [AdminController::class, 'storeSkill'])->name('skills.store');
     Route::put('/skills/{skill}', [AdminController::class, 'updateSkill'])->name('skills.update');
     Route::delete('/skills/{skill}', [AdminController::class, 'destroySkill'])->name('skills.destroy');
+    // Portfolio Reset
+    Route::post('/portfolio/reset', [AdminController::class, 'resetPortfolio'])->name('portfolio.reset');
 });
 
 Route::get('/robots.txt', function () {

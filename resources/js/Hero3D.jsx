@@ -554,6 +554,18 @@ const ParallaxGroup = ({ children }) => {
 export default function Hero3D({ initialSkills }) {
   const [isCyberTheme, setIsCyberTheme] = useState(false);
   const [exploded, setExploded] = useState(false);
+  const [webglSupported, setWebglSupported] = useState(true);
+
+  // Check WebGL support
+  useEffect(() => {
+    try {
+      const canvas = document.createElement('canvas');
+      const supported = !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+      setWebglSupported(supported);
+    } catch (e) {
+      setWebglSupported(false);
+    }
+  }, []);
 
   // Sync color variables with theme classes
   useEffect(() => {
@@ -702,6 +714,43 @@ export default function Hero3D({ initialSkills }) {
       yOffset
     };
   });
+
+  if (!webglSupported) {
+    return (
+      <div className="w-full h-full relative flex items-center justify-center overflow-hidden" style={{ minHeight: '400px' }}>
+        {/* Ambient premium cosmic glow */}
+        <div style={{
+          position: 'absolute',
+          width: '320px',
+          height: '320px',
+          borderRadius: '50%',
+          background: isCyberTheme 
+            ? 'radial-gradient(circle, rgba(57, 255, 20, 0.12) 0%, rgba(0, 229, 255, 0.05) 50%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(255, 106, 26, 0.12) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 70%)',
+          filter: 'blur(30px)',
+          animation: 'pulse 6s infinite alternate ease-in-out',
+        }}></div>
+
+        {/* Crystalline fallback node */}
+        <div className="relative flex items-center justify-center" style={{
+          width: '140px',
+          height: '140px',
+          borderRadius: '50%',
+          border: isCyberTheme ? '1px dashed rgba(57, 255, 20, 0.25)' : '1px dashed rgba(255, 106, 26, 0.25)',
+          animation: 'spin 25s linear infinite',
+        }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            border: isCyberTheme ? '2.5px solid #39ff14' : '2.5px solid #ff6a1a',
+            boxShadow: isCyberTheme ? '0 0 35px rgba(57, 255, 20, 0.4)' : '0 0 35px rgba(255, 106, 26, 0.4)',
+            background: 'rgba(7, 7, 10, 0.85)',
+          }}></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full relative flex items-center justify-center">

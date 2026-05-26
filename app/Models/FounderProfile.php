@@ -20,7 +20,7 @@ class FounderProfile extends Model
     public function getEyebrowAttribute($value)
     {
         if (app()->getLocale() === 'en') {
-            return $this->eyebrow_en ?: $value;
+            return trim($this->eyebrow_en ?? '') !== '' ? $this->eyebrow_en : $value;
         }
         return $value;
     }
@@ -28,7 +28,7 @@ class FounderProfile extends Model
     public function getHeadingAttribute($value)
     {
         if (app()->getLocale() === 'en') {
-            return $this->heading_en ?: $value;
+            return trim($this->heading_en ?? '') !== '' ? $this->heading_en : $value;
         }
         return $value;
     }
@@ -36,7 +36,7 @@ class FounderProfile extends Model
     public function getDescriptionAttribute($value)
     {
         if (app()->getLocale() === 'en') {
-            return $this->description_en ?: $value;
+            return trim($this->description_en ?? '') !== '' ? $this->description_en : $value;
         }
         return $value;
     }

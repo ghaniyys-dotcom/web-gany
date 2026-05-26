@@ -300,16 +300,34 @@
       const container = document.querySelector('.timeline-wire-container');
       const track = document.querySelector('.timeline-wire-track');
       
-      function alignTimelineWire() {
+      let containerRect = null;
+      let totalHeight = 0;
+      let pathLength = 0;
+      let processHeight = 0;
+      let processTop = 0;
+      let stepTops = [];
+
+      function updateCachedMetrics() {
         if (!container || !track || !wireDraw) return;
+        
+        containerRect = container.getBoundingClientRect();
+        const absoluteContainerTop = containerRect.top + window.scrollY;
+        totalHeight = containerRect.height;
+        processHeight = processSection.offsetHeight;
+        processTop = processSection.getBoundingClientRect().top + window.scrollY;
+        
         const dots = document.querySelectorAll('.timeline-node-dot');
         if (dots.length === 0) return;
-        const containerRect = container.getBoundingClientRect();
-        const totalHeight = containerRect.height;
+        
         const svgY = Array.from(dots).map(dot => {
-          const dotRect = dot.getBoundingClientRect();
-          return ((dotRect.top + dotRect.height / 2) - containerRect.top) / totalHeight * 1000;
+          const absoluteDotTop = dot.getBoundingClientRect().top + window.scrollY;
+          return (absoluteDotTop + dot.offsetHeight / 2 - absoluteContainerTop) / totalHeight * 1000;
         });
+
+        stepTops = Array.from(steps).map(step => {
+          return step.getBoundingClientRect().top + window.scrollY;
+        });
+        
         let d = 'M 40,0';
         if (svgY.length > 0) {
           // Segment 0: from (40, 0) to (40, svgY[0])
@@ -330,27 +348,46 @@
               d += ` C 20,${yPrev + segmentDy * 0.25} 20,${yPrev + segmentDy * 0.75} 40,${yCurr}`;
             }
           }
+
+          // Smooth curved winding down to the bottom
+          const lastY = svgY[svgY.length - 1];
+          const segmentDy = 1000 - lastY;
+          const lastIsOdd = svgY.length % 2 === 1;
+          const ctrlX = lastIsOdd ? 60 : 20; // Alternating X point
+          d += ` C ${ctrlX},${lastY + segmentDy * 0.25} ${ctrlX},${lastY + segmentDy * 0.75} 40,1000`;
+        } else {
+          d += ' L 40,1000';
         }
-        d += ' L 40,1000';
+        
         track.setAttribute('d', d);
         wireDraw.setAttribute('d', d);
-        const pathLength = wireDraw.getTotalLength();
+        pathLength = wireDraw.getTotalLength();
         wireDraw.style.strokeDasharray = pathLength;
       }
       
-      alignTimelineWire();
-      window.addEventListener('resize', alignTimelineWire);
+      updateCachedMetrics();
+      window.addEventListener('load', updateCachedMetrics);
+      window.addEventListener('resize', updateCachedMetrics);
       
+      let ticking = false;
       window.addEventListener('scroll', function() {
-        const rect = processSection.getBoundingClientRect();
-        const scrollDistance = -rect.top + (window.innerHeight / 2);
-        let progress = scrollDistance / rect.height;
-        progress = Math.max(0, Math.min(1, progress));
-        const pathLength = wireDraw.getTotalLength();
-        wireDraw.style.strokeDashoffset = pathLength - (progress * pathLength);
-        steps.forEach(step => {
-          step.classList.toggle('active-step', step.getBoundingClientRect().top < window.innerHeight * 0.65);
-        });
+        if (!ticking) {
+          window.requestAnimationFrame(function() {
+            const currentScrollY = window.scrollY;
+            const scrollDistance = currentScrollY - processTop + (window.innerHeight / 2);
+            let progress = scrollDistance / processHeight;
+            progress = Math.max(0, Math.min(1, progress));
+            
+            wireDraw.style.strokeDashoffset = pathLength - (progress * pathLength);
+            
+            steps.forEach((step, idx) => {
+              const absoluteTop = stepTops[idx] || 0;
+              step.classList.toggle('active-step', absoluteTop < currentScrollY + window.innerHeight * 0.65);
+            });
+            ticking = false;
+          });
+          ticking = true;
+        }
       }, { passive: true });
     }
   });
